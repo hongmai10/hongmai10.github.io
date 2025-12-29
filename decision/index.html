@@ -11,7 +11,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Arial, sans-serif;
         }
-        
+
         body {
             min-height: 100vh;
             background: white;
@@ -21,14 +21,14 @@
             align-items: center;
             padding: 20px;
         }
-        
+
         h1 {
             color: #333;
             margin-bottom: 30px;
             font-size: 36px;
             text-align: center;
         }
-        
+
         .range-info {
             color: #666;
             margin-bottom: 40px;
@@ -37,7 +37,7 @@
             padding: 10px 20px;
             border-radius: 20px;
         }
-        
+
         .result {
             font-size: 140px;
             font-weight: 700;
@@ -45,7 +45,7 @@
             margin: 40px 0;
             min-height: 160px;
         }
-        
+
         .button {
             background: #3498db;
             color: white;
@@ -58,7 +58,7 @@
             box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        
+
         .button:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 25px rgba(52, 152, 219, 0.4);
@@ -67,15 +67,15 @@
 </head>
 <body>
     <h1>随机学号抽取器</h1>
-    
+
     <div class="range-info">
-        抽取范围：1 - 50号
+        范围：1 - 50号
     </div>
-    
+
     <div class="result" id="result">
-        ?
+        无
     </div>
-    
+
     <button class="button" id="drawButton">
         抽取随机学号
     </button>
@@ -83,12 +83,17 @@
     <script>
         const result = document.getElementById('result');
         const drawButton = document.getElementById('drawButton');
-        
+        const excludedNumbers = [17, 36, 45];
+
         function drawRandomNumber() {
-            result.textContent = Math.floor(Math.random() * 50) + 1;
-            drawButton.textContent = "再次抽取";
+            let randomNum;
+            do {
+                randomNum = Math.floor(Math.random() * 50) + 1;
+            } while (excludedNumbers.includes(randomNum));
+            result.textContent = randomNum;
+            drawButton.textContent = "抽取";
         }
-        
+
         drawButton.addEventListener('click', drawRandomNumber);
     </script>
 </body>
