@@ -1,103 +1,204 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>随机学号抽取器</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes">
+        <script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
+        <style>
+            input { font-size: medium; padding: 3px; margin-top: 3px; }
+            hr { width: 350px; }
+        </style>
+        <title>随机抽取学号</title>
+    </head>
+    <body style="font-size: large;">
+        <div style="text-align: center; margin-left: auto; margin-right: auto; max-width: 80%;">
+            <h1 style="font-size: xx-large;">随机抽取学号</h1>
+            <div style="margin-top:  0px;"><span style="display: inline-block; width: 150px; text-align: right;">最小值（包括）：</span><input type="text" id="minval_input" value="1"></div>
+            <div style="margin-top: 10px;"><span style="display: inline-block; width: 150px; text-align: right;">最大值（包括）：</span><input type="text" id="maxval_input" value="50"></div>
+            <div style="margin-top: 10px;"><span style="display: inline-block; width: 150px; text-align: right;">单次抽取数量 ： </span><input type="text" id="numcnt_input" value="1"></div>
+            <div style="margin-top: 10px; font-size: small;">单次抽取数量应不高于 20。</div>
+            <hr>
+            <div style="font-size: medium; margin-top: 10px; /*cursor: pointer;*/" id="specify_title">
+                为个别学号调整概率
+            </div>
+            <div id="specify_form">
+                <div style="margin-top: 20px;">指定的学号：<input type="text" id="specified_id"></div>
+                <div style="margin-top: 10px;">概率调整到：<input type="text" id="specified_pr"></div>
+                <p style="font-size: small;">
+                    多个指定的学号请用空格分开，除此之外不要有多余的空格<br/>"概率调整到"字段请填入一个 0 到 1 之间（均包含）的小数<br/>不指定概率时两字段应均为空
+                </p>
+            </div>
+            <hr style="margin-top: 10px;">
+            <h3 id="number_display" style="height: max-content;">学号</h3>
+            <button id="get_number" style="margin-top: 10px; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: large;">抽取</button>
+            <div style="font-size: small; font-style: italic; margin-top: 10px;">Made by boboucn and LagranZhai. version 3.0.2.</div>
+        </div>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-        }
+        <script type="text/javascript">
+            function getrnduint() { return window.crypto.getRandomValues(new Uint32Array(1))[0]; }
+            function getrnduint_inrange(min, max) { return getrnduint() % (max - min + 1) + min; }
 
-        body {
-            min-height: 100vh;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+            const EXCLUDED_NUMBERS = [17, 36, 45];
 
-        h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 36px;
-            font-weight: 700;
-            text-align: center;
-        }
+            class random_heap {
+                constructor(_min, _max) {
+                    this.min = _min;
+                    this.max = _max;
+                    var availableNumbers = [];
+                    for (var i = _min; i <= _max; ++i) {
+                        if (!EXCLUDED_NUMBERS.includes(i)) {
+                            availableNumbers.push(i);
+                        }
+                    }
+                    this.size = availableNumbers.length;
+                    this.heap = new Uint32Array(this.size + 1);
+                    for (var i = 1; i <= this.size; ++i) {
+                        this.heap[i] = availableNumbers[i - 1];
+                    }
+                    for (var i = 1; i <= this.size; ++i) {
+                        var j = getrnduint_inrange(1, i);
+                        var t = this.heap[i]; this.heap[i] = this.heap[j]; this.heap[j] = t;
+                    }
+                }
 
-        .range-info {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 18px;
-            font-weight: 400;
-            background: #f5f5f5;
-            padding: 10px 20px;
-            border-radius: 20px;
-        }
+                get = function() {
+                    var i = 1, j = 1;
+                    for (;;) {
+                        j = (i << 1) | (getrnduint() & 1);
+                        if (j > this.size) break;
+                        var t = this.heap[i]; this.heap[i] = this.heap[j]; this.heap[j] = t;
+                        i = j;
+                    }
+                    return this.heap[1];
+                }
+            };
+            var rndheap;
+        </script>
 
-        .result {
-            font-size: 140px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin: 40px 0;
-            min-height: 160px;
-        }
+        <script type="text/javascript">
+            $(function() {
+                if (window.localStorage.getItem("minval") != null && window.localStorage.getItem("maxval") != null) {
+                    $("#minval_input").val(window.localStorage.getItem("minval"));
+                    $("#maxval_input").val(window.localStorage.getItem("maxval"));
+                } else {
+                    window.localStorage.setItem("minval", "1");
+                    window.localStorage.setItem("maxval", "50");
+                }
+            });
+        </script>
 
-        .button {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            font-size: 22px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+        <script type="text/javascript">
+            //$("#specify_title").click(function() { $("#specify_form").slideToggle(); });
+        </script>
 
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(52, 152, 219, 0.4);
-        }
-    </style>
-</head>
-<body>
-    <h1>随机学号抽取器</h1>
+        <script type="text/javascript">
+            var prvmin = -1, prvmax = -1;
+            var select_fn = function() {
+                var minval_input = 0, maxval_input = 0, numcnt_input = 0, isspec = false, speclist = [], specprob = 0.0, displayedstring = "";
+                var valid_integer = /^\d+$/;
+                var valid_float = /^\d+(\.\d+)?$/;
+                var valid_intlist = /^(\d+\s)+$/;
+                if (!valid_integer.test($("#minval_input").val()) || !valid_integer.test($("#maxval_input").val()) || !valid_integer.test($("#numcnt_input").val())) {
+                    alert("最小值、最大值、抽取个数中有错误的输入");
+                    return;
+                }
 
-    <div class="range-info">
-        范围：1 - 50号
-    </div>
+                if ($("#specified_id").val() != "" || $("#specified_pr").val() != "") {
+                    isspec = true;
+                    if (!valid_intlist.test($("#specified_id").val() + " ") || !valid_float.test($("#specified_pr").val())) {
+                        alert("指定学号概率部分输入有误");
+                        return;
+                    }
+                }
+                
+                minval_input = parseInt($("#minval_input").val());
+                maxval_input = parseInt($("#maxval_input").val());
+                numcnt_input = parseInt($("#numcnt_input").val());
+                if (isspec) {
+                    var t = $("#specified_id").val().split(" ");
+                    for (var i = 0; i < t.length; ++i) {
+                        var num = parseInt(t[i]);
+                        if (!EXCLUDED_NUMBERS.includes(num)) {
+                            speclist.push(num);
+                        }
+                    }
+                    specprob = parseFloat($("#specified_pr").val());
+                }
 
-    <div class="result" id="result">
-        无
-    </div>
+                var inr = function(i, a, b) { return i >= a && i <= b; };
+                if (!inr(minval_input, 0, 1 << 30) || !inr(maxval_input, 0, 1 << 30) || !inr(numcnt_input, 1, 20) || maxval_input < minval_input) {
+                    alert("最小值、最大值、抽取个数中有错误的输入，可能是因为输入小于零或太大，也有可能是因为最大值小于最小值");
+                    return;
+                }
+                
+                if (isspec) {
+                    if (speclist.length > 0) {
+                        if (Math.max.apply(null, speclist) > maxval_input || Math.min.apply(null, speclist) < minval_input) {
+                            alert("指定学号的部分输入有误，可能是因为指定的学号不在输入的最大最小值范围内");
+                            return;
+                        }
+                    }
 
-    <button class="button" id="drawButton">
-        抽取
-    </button>
+                    if (!inr(specprob, 0, 1)) {
+                        alert("概率输入有误");
+                        return;
+                    }
 
-    <script>
-        const result = document.getElementById('result');
-        const drawButton = document.getElementById('drawButton');
-        const excludedNumbers = [17, 36, 45];
+                    if (speclist.length >= maxval_input - minval_input + 1 - EXCLUDED_NUMBERS.filter(n => n >= minval_input && n <= maxval_input).length) {
+                        alert("您不可以指定所有可用学号或者更多的学号");
+                        return;
+                    }
+                }
 
-        function drawRandomNumber() {
-            let randomNum;
-            do {
-                randomNum = Math.floor(Math.random() * 50) + 1;
-            } while (excludedNumbers.includes(randomNum));
-            result.textContent = randomNum;
-        }
+                if (minval_input != prvmin || maxval_input != prvmax) {
+                    var availableCount = maxval_input - minval_input + 1 - EXCLUDED_NUMBERS.filter(n => n >= minval_input && n <= maxval_input).length;
+                    if (availableCount < 1) {
+                        alert("在当前范围内没有可抽取的学号");
+                        return;
+                    }
+                    
+                    if (availableCount < 5000)
+                        rndheap = new random_heap(minval_input, maxval_input);
+                    prvmin = minval_input; prvmax = maxval_input;
+                    window.localStorage.setItem("minval", minval_input);
+                    window.localStorage.setItem("maxval", maxval_input);
+                }
 
-        drawButton.addEventListener('click', drawRandomNumber);
-    </script>
-</body>
+                var __getn = function() {
+                    var availableCount = maxval_input - minval_input + 1 - EXCLUDED_NUMBERS.filter(n => n >= minval_input && n <= maxval_input).length;
+                    
+                    if (availableCount < 5000) {
+                        return rndheap.get();
+                    } else {
+                        var result;
+                        do {
+                            result = getrnduint_inrange(minval_input, maxval_input);
+                        } while (EXCLUDED_NUMBERS.includes(result));
+                        return result;
+                    }
+                };
+
+                for (var i = 1; i <= numcnt_input; ++i) {
+                    var cur = "";
+                    if (isspec && speclist.length > 0) {
+                        if (Math.random() < specprob) {
+                            cur = speclist[getrnduint_inrange(0, speclist.length - 1)].toString();
+                        } else {
+                            do {
+                                cur = __getn().toString();
+                            } while (speclist.includes(parseInt(cur)));
+                        }
+                        displayedstring += cur + " ";
+                    }
+                    else {
+                        displayedstring += __getn().toString() + " ";
+                    }
+                }
+                displayedstring = displayedstring.slice(0, -1);
+                $("#number_display").text(displayedstring);
+            };
+
+            $("#get_number").click(select_fn);
+        </script>
+    </body>
 </html>
