@@ -18,187 +18,117 @@
             <div style="margin-top: 10px;"><span style="display: inline-block; width: 150px; text-align: right;">单次抽取数量 ： </span><input type="text" id="numcnt_input" value="1"></div>
             <div style="margin-top: 10px; font-size: small;">单次抽取数量应不高于 20。</div>
             <hr>
-            <div style="font-size: medium; margin-top: 10px; /*cursor: pointer;*/" id="specify_title">
+            <div style="font-size: medium; margin-top: 10px;" id="specify_title">
                 为个别学号调整概率
             </div>
             <div id="specify_form">
                 <div style="margin-top: 20px;">指定的学号：<input type="text" id="specified_id"></div>
                 <div style="margin-top: 10px;">概率调整到：<input type="text" id="specified_pr"></div>
                 <p style="font-size: small;">
-                    多个指定的学号请用空格分开，除此之外不要有多余的空格<br/>"概率调整到"字段请填入一个 0 到 1 之间（均包含）的小数<br/>不指定概率时两字段应均为空
+                    多个指定的学号请用空格分开<br/>概率为0到1之间的小数<br/>不指定时两字段应均为空
                 </p>
             </div>
             <hr style="margin-top: 10px;">
             <h3 id="number_display" style="height: max-content;">学号</h3>
-            <button id="get_number" style="margin-top: 10px; padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: large;">抽取</button>
+            <button id="get_number" style="margin-top: 10px; padding: 5px 10px; font-size: large;">抽取</button>
             <div style="font-size: small; font-style: italic; margin-top: 10px;">Made for Hongmai10 class. version 1.0.0.</div>
         </div>
 
-        <script type="text/javascript">
-            function getrnduint() { return window.crypto.getRandomValues(new Uint32Array(1))[0]; }
-            function getrnduint_inrange(min, max) { return getrnduint() % (max - min + 1) + min; }
-
+        <script>
             const EXCLUDED_NUMBERS = [17, 36, 45];
+            
+            function getRandom(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
 
-            class random_heap {
-                constructor(_min, _max) {
-                    this.min = _min;
-                    this.max = _max;
-                    var availableNumbers = [];
-                    for (var i = _min; i <= _max; ++i) {
-                        if (!EXCLUDED_NUMBERS.includes(i)) {
-                            availableNumbers.push(i);
-                        }
-                    }
-                    this.size = availableNumbers.length;
-                    this.heap = new Uint32Array(this.size + 1);
-                    for (var i = 1; i <= this.size; ++i) {
-                        this.heap[i] = availableNumbers[i - 1];
-                    }
-                    for (var i = 1; i <= this.size; ++i) {
-                        var j = getrnduint_inrange(1, i);
-                        var t = this.heap[i]; this.heap[i] = this.heap[j]; this.heap[j] = t;
-                    }
+            function validateRange(value, min, max, name) {
+                const num = parseInt(value);
+                if (isNaN(num) || num < min || num > max) {
+                    alert(`${name}必须在${min}到${max}之间`);
+                    return false;
                 }
+                return num;
+            }
 
-                get = function() {
-                    var i = 1, j = 1;
-                    for (;;) {
-                        j = (i << 1) | (getrnduint() & 1);
-                        if (j > this.size) break;
-                        var t = this.heap[i]; this.heap[i] = this.heap[j]; this.heap[j] = t;
-                        i = j;
-                    }
-                    return this.heap[1];
-                }
-            };
-            var rndheap;
-        </script>
-
-        <script type="text/javascript">
             $(function() {
-                if (window.localStorage.getItem("minval") != null && window.localStorage.getItem("maxval") != null) {
-                    $("#minval_input").val(window.localStorage.getItem("minval"));
-                    $("#maxval_input").val(window.localStorage.getItem("maxval"));
-                } else {
-                    window.localStorage.setItem("minval", "1");
-                    window.localStorage.setItem("maxval", "50");
+                if (localStorage.getItem("minval") && localStorage.getItem("maxval")) {
+                    $("#minval_input").val(localStorage.getItem("minval"));
+                    $("#maxval_input").val(localStorage.getItem("maxval"));
                 }
             });
-        </script>
 
-        <script type="text/javascript">
-            //$("#specify_title").click(function() { $("#specify_form").slideToggle(); });
-        </script>
-
-        <script type="text/javascript">
-            var prvmin = -1, prvmax = -1;
-            var select_fn = function() {
-                var minval_input = 0, maxval_input = 0, numcnt_input = 0, isspec = false, speclist = [], specprob = 0.0, displayedstring = "";
-                var valid_integer = /^\d+$/;
-                var valid_float = /^\d+(\.\d+)?$/;
-                var valid_intlist = /^(\d+\s)+$/;
-                if (!valid_integer.test($("#minval_input").val()) || !valid_integer.test($("#maxval_input").val()) || !valid_integer.test($("#numcnt_input").val())) {
-                    alert("最小值、最大值、抽取个数中有错误的输入");
+            $("#get_number").click(function() {
+                const min = validateRange($("#minval_input").val(), 1, 100, "最小值");
+                const max = validateRange($("#maxval_input").val(), 1, 100, "最大值");
+                if (min === false || max === false) return;
+                
+                if (min > max) {
+                    alert("最小值不能大于最大值");
                     return;
                 }
 
-                if ($("#specified_id").val() != "" || $("#specified_pr").val() != "") {
-                    isspec = true;
-                    if (!valid_intlist.test($("#specified_id").val() + " ") || !valid_float.test($("#specified_pr").val())) {
-                        alert("指定学号概率部分输入有误");
-                        return;
-                    }
+                const count = validateRange($("#numcnt_input").val(), 1, 20, "抽取数量");
+                if (count === false) return;
+
+                let available = [];
+                for (let i = min; i <= max; i++) {
+                    if (!EXCLUDED_NUMBERS.includes(i)) available.push(i);
                 }
                 
-                minval_input = parseInt($("#minval_input").val());
-                maxval_input = parseInt($("#maxval_input").val());
-                numcnt_input = parseInt($("#numcnt_input").val());
-                if (isspec) {
-                    var t = $("#specified_id").val().split(" ");
-                    for (var i = 0; i < t.length; ++i) {
-                        var num = parseInt(t[i]);
-                        if (!EXCLUDED_NUMBERS.includes(num)) {
-                            speclist.push(num);
-                        }
-                    }
-                    specprob = parseFloat($("#specified_pr").val());
-                }
-
-                var inr = function(i, a, b) { return i >= a && i <= b; };
-                if (!inr(minval_input, 0, 1 << 30) || !inr(maxval_input, 0, 1 << 30) || !inr(numcnt_input, 1, 20) || maxval_input < minval_input) {
-                    alert("最小值、最大值、抽取个数中有错误的输入，可能是因为输入小于零或太大，也有可能是因为最大值小于最小值");
+                if (available.length === 0) {
+                    alert("当前范围内没有可抽取的学号");
                     return;
                 }
-                
-                if (isspec) {
-                    if (speclist.length > 0) {
-                        if (Math.max.apply(null, speclist) > maxval_input || Math.min.apply(null, speclist) < minval_input) {
-                            alert("指定学号的部分输入有误，可能是因为指定的学号不在输入的最大最小值范围内");
-                            return;
-                        }
-                    }
 
-                    if (!inr(specprob, 0, 1)) {
-                        alert("概率输入有误");
+                const specIds = $("#specified_id").val().trim();
+                const specProb = $("#specified_pr").val().trim();
+                let specList = [];
+                let probability = 0;
+
+                if (specIds || specProb) {
+                    if (!specIds || !specProb) {
+                        alert("指定学号和概率必须同时填写");
                         return;
                     }
 
-                    if (speclist.length >= maxval_input - minval_input + 1 - EXCLUDED_NUMBERS.filter(n => n >= minval_input && n <= maxval_input).length) {
-                        alert("您不可以指定所有可用学号或者更多的学号");
+                    specList = specIds.split(/\s+/).map(Number).filter(n => 
+                        !isNaN(n) && n >= min && n <= max && !EXCLUDED_NUMBERS.includes(n)
+                    );
+                    
+                    if (specList.length === 0) {
+                        alert("指定的学号无效或不在范围内");
+                        return;
+                    }
+
+                    probability = parseFloat(specProb);
+                    if (isNaN(probability) || probability < 0 || probability > 1) {
+                        alert("概率必须是0到1之间的小数");
+                        return;
+                    }
+
+                    const normalList = available.filter(n => !specList.includes(n));
+                    if (normalList.length === 0) {
+                        alert("不能指定所有可用学号");
                         return;
                     }
                 }
 
-                if (minval_input != prvmin || maxval_input != prvmax) {
-                    var availableCount = maxval_input - minval_input + 1 - EXCLUDED_NUMBERS.filter(n => n >= minval_input && n <= maxval_input).length;
-                    if (availableCount < 1) {
-                        alert("在当前范围内没有可抽取的学号");
-                        return;
-                    }
-                    
-                    if (availableCount < 5000)
-                        rndheap = new random_heap(minval_input, maxval_input);
-                    prvmin = minval_input; prvmax = maxval_input;
-                    window.localStorage.setItem("minval", minval_input);
-                    window.localStorage.setItem("maxval", maxval_input);
-                }
+                localStorage.setItem("minval", min);
+                localStorage.setItem("maxval", max);
 
-                var __getn = function() {
-                    var availableCount = maxval_input - minval_input + 1 - EXCLUDED_NUMBERS.filter(n => n >= minval_input && n <= maxval_input).length;
-                    
-                    if (availableCount < 5000) {
-                        return rndheap.get();
+                let results = [];
+                const normalAvailable = available.filter(n => !specList.includes(n));
+
+                for (let i = 0; i < count; i++) {
+                    if (specList.length > 0 && Math.random() < probability) {
+                        results.push(specList[getRandom(0, specList.length - 1)]);
                     } else {
-                        var result;
-                        do {
-                            result = getrnduint_inrange(minval_input, maxval_input);
-                        } while (EXCLUDED_NUMBERS.includes(result));
-                        return result;
-                    }
-                };
-
-                for (var i = 1; i <= numcnt_input; ++i) {
-                    var cur = "";
-                    if (isspec && speclist.length > 0) {
-                        if (Math.random() < specprob) {
-                            cur = speclist[getrnduint_inrange(0, speclist.length - 1)].toString();
-                        } else {
-                            do {
-                                cur = __getn().toString();
-                            } while (speclist.includes(parseInt(cur)));
-                        }
-                        displayedstring += cur + " ";
-                    }
-                    else {
-                        displayedstring += __getn().toString() + " ";
+                        results.push(normalAvailable[getRandom(0, normalAvailable.length - 1)]);
                     }
                 }
-                displayedstring = displayedstring.slice(0, -1);
-                $("#number_display").text(displayedstring);
-            };
 
-            $("#get_number").click(select_fn);
+                $("#number_display").text(results.join(" "));
+            });
         </script>
     </body>
 </html>
