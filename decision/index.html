@@ -120,13 +120,15 @@
 
                 let results = [];
 
+                const is17Specified = specList.includes(LOW_PROBABILITY_NUMBER);
+
                 let normalNumbers = [];
                 let lowProbabilityNumbers = [];
                 
                 for (let i = min; i <= max; i++) {
                     if (EXCLUDED_NUMBERS.includes(i)) continue;
-                    
-                    if (i === LOW_PROBABILITY_NUMBER && i >= min && i <= max) {
+
+                    if (i === LOW_PROBABILITY_NUMBER && i >= min && i <= max && !is17Specified) {
                         lowProbabilityNumbers.push(i);
                     } else {
                         normalNumbers.push(i);
@@ -138,9 +140,12 @@
                     lowProbabilityNumbers = [];
                 }
 
-                const userSpecifiedNumbers = specList.filter(n => n !== LOW_PROBABILITY_NUMBER);
+                const userSpecifiedNumbers = specList;
 
-                const normalAvailable = normalNumbers.filter(n => !userSpecifiedNumbers.includes(n));
+                const normalAvailable = normalNumbers.filter(n => 
+                    !userSpecifiedNumbers.includes(n) || 
+                    (n === LOW_PROBABILITY_NUMBER && lowProbabilityNumbers.length > 0)
+                );
                 
                 for (let i = 0; i < count; i++) {
                     if (userSpecifiedNumbers.length > 0 && Math.random() < probability) {
@@ -148,7 +153,7 @@
                     } 
                     else if (lowProbabilityNumbers.length > 0 && Math.random() < LOW_PROBABILITY_RATE) {
                         results.push(LOW_PROBABILITY_NUMBER);
-                    }
+                    } 
                     else {
                         results.push(normalAvailable[getRandom(0, normalAvailable.length - 1)]);
                     }
