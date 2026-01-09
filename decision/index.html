@@ -35,7 +35,9 @@
         </div>
 
         <script>
-            const EXCLUDED_NUMBERS = [17, 36, 45];
+            const EXCLUDED_NUMBERS = [36, 45];
+            const LOW_PROBABILITY_NUMBER = 17;
+            const LOW_PROBABILITY_RATE = 0.3;
             
             function getRandom(min, max) {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -117,12 +119,37 @@
                 localStorage.setItem("maxval", max);
 
                 let results = [];
-                const normalAvailable = available.filter(n => !specList.includes(n));
 
-                for (let i = 0; i < count; i++) {
-                    if (specList.length > 0 && Math.random() < probability) {
-                        results.push(specList[getRandom(0, specList.length - 1)]);
+                let normalNumbers = [];
+                let lowProbabilityNumbers = [];
+                
+                for (let i = min; i <= max; i++) {
+                    if (EXCLUDED_NUMBERS.includes(i)) continue;
+                    
+                    if (i === LOW_PROBABILITY_NUMBER && i >= min && i <= max) {
+                        lowProbabilityNumbers.push(i);
                     } else {
+                        normalNumbers.push(i);
+                    }
+                }
+
+                if (normalNumbers.length === 0 && lowProbabilityNumbers.length > 0) {
+                    normalNumbers = lowProbabilityNumbers;
+                    lowProbabilityNumbers = [];
+                }
+
+                const userSpecifiedNumbers = specList.filter(n => n !== LOW_PROBABILITY_NUMBER);
+
+                const normalAvailable = normalNumbers.filter(n => !userSpecifiedNumbers.includes(n));
+                
+                for (let i = 0; i < count; i++) {
+                    if (userSpecifiedNumbers.length > 0 && Math.random() < probability) {
+                        results.push(userSpecifiedNumbers[getRandom(0, userSpecifiedNumbers.length - 1)]);
+                    } 
+                    else if (lowProbabilityNumbers.length > 0 && Math.random() < LOW_PROBABILITY_RATE) {
+                        results.push(LOW_PROBABILITY_NUMBER);
+                    }
+                    else {
                         results.push(normalAvailable[getRandom(0, normalAvailable.length - 1)]);
                     }
                 }
