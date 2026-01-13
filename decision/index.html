@@ -29,9 +29,6 @@
 
 <script>
 $(function(){
-    $("#minval_input").val(localStorage.getItem("minval") || "1");
-    $("#maxval_input").val(localStorage.getItem("maxval") || "50");
-
     $("#get_number").click(function(){
         var min=$("#minval_input").val(), max=$("#maxval_input").val(), cnt=$("#numcnt_input").val();
         var spe=$("#specified_id").val(), pr=$("#specified_pr").val();
@@ -60,6 +57,8 @@ $(function(){
             spList.forEach(function(v){if(v<min||v>max){alert("指定学号超出范围");throw"stop";}});
         }
 
+        var is17Specified = spList.indexOf(17) !== -1;
+
         var result=[];
         var usedNumbers = [];
 
@@ -77,9 +76,33 @@ $(function(){
             }
 
             for(var i=0; i<cnt; i++){
-                if(hasSp && spList.indexOf(allNumbers[i])!=-1){
+                var currentNum = allNumbers[i];
+
+                if(currentNum === 17 && !is17Specified && !hasSp){
+                    if(Math.random() > 0.1){
+                        var remainingNumbers = allNumbers.slice(i+1).filter(function(num){
+                            return num !== 17 || is17Specified || hasSp;
+                        });
+                        if(remainingNumbers.length > 0){
+                            var randomIndex = Math.floor(Math.random() * remainingNumbers.length);
+                            currentNum = remainingNumbers[randomIndex];
+                            var indexInAll = allNumbers.indexOf(currentNum);
+                            if(indexInAll !== -1){
+                                allNumbers.splice(indexInAll, 1);
+                                for(var k=min; k<=max; k++){
+                                    if(allNumbers.indexOf(k) === -1 && !result.includes(k) && k !== 17){
+                                        allNumbers.push(k);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if(hasSp && spList.indexOf(currentNum)!=-1){
                     if(Math.random()<spPr){
-                        result.push(allNumbers[i]);
+                        result.push(currentNum);
                     } else {
                         var remainingNonSp = allNumbers.slice(i).filter(function(num){
                             return spList.indexOf(num)===-1;
@@ -87,11 +110,11 @@ $(function(){
                         if(remainingNonSp.length>0){
                             result.push(remainingNonSp[Math.floor(Math.random()*remainingNonSp.length)]);
                         } else {
-                            result.push(allNumbers[i]);
+                            result.push(currentNum);
                         }
                     }
                 } else {
-                    result.push(allNumbers[i]);
+                    result.push(currentNum);
                 }
             }
         } else {
@@ -101,16 +124,36 @@ $(function(){
                     randNum=spList[Math.floor(Math.random()*spList.length)];
                 }else{
                     do{
-                        randNum=Math.floor(Math.random()*(max-min+1))+min;
-                    }while(hasSp&&spList.indexOf(randNum)!=-1);
+                        if(!is17Specified && !hasSp){
+                            var weightedNumbers = [];
+                            for(var num=min; num<=max; num++){
+                                if(num === 17){
+                                    for(var w=0; w<1; w++){
+                                        if(Math.random() < 0.1) weightedNumbers.push(num);
+                                    }
+                                } else {
+                                    weightedNumbers.push(num);
+                                }
+                            }
+
+                            if(weightedNumbers.length === 0){
+                                for(var num=min; num<=max; num++){
+                                    weightedNumbers.push(num);
+                                }
+                            }
+                            
+                            randNum = weightedNumbers[Math.floor(Math.random()*weightedNumbers.length)];
+                        } else {
+                            randNum=Math.floor(Math.random()*(max-min+1))+min;
+                        }
+                    }while(usedNumbers.indexOf(randNum)!=-1);
                 }
+                usedNumbers.push(randNum);
                 result.push(randNum);
             }
         }
         
         $("#number_display").text(result.join(" "));
-        localStorage.setItem("minval",min);
-        localStorage.setItem("maxval",max);
     });
 });
 </script>
