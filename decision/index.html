@@ -10,8 +10,8 @@
 <body style="font-size:large;">
 <div style="text-align:center;margin:auto;max-width:80%;">
     <h1 style="font-size:xx-large;">随机抽取学号</h1>
-    <div><span style="display:inline-block;width:150px;text-align:right;">最小值（包括）：</span><input type="text" id="minval_input"></div>
-    <div style="margin-top:10px;"><span style="display:inline-block;width:150px;text-align:right;">最大值（包括）：</span><input type="text" id="maxval_input"></div>
+    <div><span style="display:inline-block;width:150px;text-align:right;">最小值（包括）：</span><input type="text" id="minval_input" value="1"></div>
+    <div style="margin-top:10px;"><span style="display:inline-block;width:150px;text-align:right;">最大值（包括）：</span><input type="text" id="maxval_input" value="50"></div>
     <div style="margin-top:10px;"><span style="display:inline-block;width:150px;text-align:right;">单次抽取数量：</span><input type="text" id="numcnt_input" value="1"></div>
     <div style="margin-top:10px;font-size:small;">单次抽取数量应不高于20。</div>
     <hr>
@@ -19,7 +19,7 @@
     <div id="specify_form">
         <div style="margin-top:20px;">指定的学号：<input type="text" id="specified_id"></div>
         <div style="margin-top:10px;">概率调整到：<input type="text" id="specified_pr"></div>
-        <p style="font-size:small;">多个指定的学号请用空格分开<br/>“概率调整到”字段请填入0到1之间的小数</p>
+        <p style="font-size:small;">多个指定的学号请用空格分开<br/>"概率调整到"字段请填入0到1之间的小数</p>
     </div>
     <hr style="margin-top:10px;">
     <h3 id="number_display" style="height:max-content;">学号</h3>
@@ -29,11 +29,9 @@
 
 <script>
 $(function(){
-    if(localStorage.getItem("minval")&&localStorage.getItem("maxval")){
-        $("#minval_input").val(localStorage.getItem("minval"));
-        $("#maxval_input").val(localStorage.getItem("maxval"));
-    }
-    
+    $("#minval_input").val(localStorage.getItem("minval") || "1");
+    $("#maxval_input").val(localStorage.getItem("maxval") || "50");
+
     $("#get_number").click(function(){
         var min=$("#minval_input").val(), max=$("#maxval_input").val(), cnt=$("#numcnt_input").val();
         var spe=$("#specified_id").val(), pr=$("#specified_pr").val();
@@ -44,7 +42,13 @@ $(function(){
         
         min=parseInt(min); max=parseInt(max); cnt=parseInt(cnt);
         if(min>max){alert("最大值不能小于最小值");return;}
-        
+
+        var totalNumbers = max - min + 1;
+        if(cnt > totalNumbers){
+            alert("抽取数量不能超过可用学号总数(" + totalNumbers + ")");
+            return;
+        }
+
         var spList=[], spPr=0, hasSp=false;
         if(spe.trim()!=""||pr.trim()!=""){
             hasSp=true;
@@ -55,18 +59,53 @@ $(function(){
             spe.split(" ").forEach(function(v){if(v)spList.push(parseInt(v));});
             spList.forEach(function(v){if(v<min||v>max){alert("指定学号超出范围");throw"stop";}});
         }
-        
+
         var result=[];
-        for(var i=0;i<cnt;i++){
-            var randNum;
-            if(hasSp&&Math.random()<spPr){
-                randNum=spList[Math.floor(Math.random()*spList.length)];
-            }else{
-                do{
-                    randNum=Math.floor(Math.random()*(max-min+1))+min;
-                }while(hasSp&&spList.indexOf(randNum)!=-1);
+        var usedNumbers = [];
+
+        var allNumbers = [];
+        for(var i=min; i<=max; i++){
+            allNumbers.push(i);
+        }
+
+        if(cnt > 1 && cnt <= totalNumbers){
+            for(var i=allNumbers.length-1; i>0; i--){
+                var j=Math.floor(Math.random()*(i+1));
+                var temp=allNumbers[i];
+                allNumbers[i]=allNumbers[j];
+                allNumbers[j]=temp;
             }
-            result.push(randNum);
+
+            for(var i=0; i<cnt; i++){
+                if(hasSp && spList.indexOf(allNumbers[i])!=-1){
+                    if(Math.random()<spPr){
+                        result.push(allNumbers[i]);
+                    } else {
+                        var remainingNonSp = allNumbers.slice(i).filter(function(num){
+                            return spList.indexOf(num)===-1;
+                        });
+                        if(remainingNonSp.length>0){
+                            result.push(remainingNonSp[Math.floor(Math.random()*remainingNonSp.length)]);
+                        } else {
+                            result.push(allNumbers[i]);
+                        }
+                    }
+                } else {
+                    result.push(allNumbers[i]);
+                }
+            }
+        } else {
+            for(var i=0;i<cnt;i++){
+                var randNum;
+                if(hasSp&&Math.random()<spPr){
+                    randNum=spList[Math.floor(Math.random()*spList.length)];
+                }else{
+                    do{
+                        randNum=Math.floor(Math.random()*(max-min+1))+min;
+                    }while(hasSp&&spList.indexOf(randNum)!=-1);
+                }
+                result.push(randNum);
+            }
         }
         
         $("#number_display").text(result.join(" "));
