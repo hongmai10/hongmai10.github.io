@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fde047"/>
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1f2937"/>
+    <title>随机转盘 - 转动转盘做出随机选择</title>
+    <meta name="description" content="创建您自己的转盘，用于随机决策、抽奖、游戏化教育等..."/>
+    <meta name="keywords" content="random wheel,spin wheel,wheel spinner,decision maker,random picker,raffle wheel,name picker"/>
+    <meta name="robots" content="index, follow"/>
+    <link rel="canonical" href="https://cn.randomwheelgame.com"/>
+    <meta property="og:title" content="随机转盘 - 转动转盘做出随机选择"/>
+    <meta property="og:description" content="创建您自己的转盘，用于随机决策、抽奖、游戏化教育等..."/>
+    <meta property="og:url" content="https://cn.randomwheelgame.com"/>
+    <meta property="og:type" content="website"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎡</text></svg>"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f3f4f6; color: #111827; line-height: 1.5; }
+        @media (prefers-color-scheme: dark) { body { background: #111827; color: #f9fafb; } }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+        .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; }
+        @media (prefers-color-scheme: dark) { .header { background: #1f2937; border-color: #374151; } }
+        .header-content { display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1.125rem; }
+        .logo-icon { font-size: 1.25rem; color: #f59e0b; }
+        .main { padding: 2rem 0; }
+        .hero { text-align: center; max-width: 48rem; margin: 0 auto 3rem; }
+        .hero h1 { font-size: 1.875rem; font-weight: 700; margin-bottom: 1rem; }
+        .hero p { color: #6b7280; font-size: 1.125rem; }
+        @media (prefers-color-scheme: dark) { .hero p { color: #9ca3af; } }
+        .steps { display: flex; justify-content: center; gap: 3rem; margin-bottom: 4rem; }
+        .step { text-align: center; }
+        .step-number { width: 2.5rem; height: 2.5rem; background: #fbbf24; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 0.5rem; }
+        .step-text { font-size: 0.875rem; color: #6b7280; }
+        @media (prefers-color-scheme: dark) { .step-text { color: #9ca3af; } }
+        .features { display: grid; gap: 1.5rem; margin-bottom: 4rem; }
+        @media (min-width: 768px) { .features { grid-template-columns: repeat(3, 1fr); } }
+        .feature-card { background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        @media (prefers-color-scheme: dark) { .feature-card { background: #1f2937; } }
+        .feature-icon { font-size: 1.875rem; margin-bottom: 0.75rem; }
+        .feature-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; }
+        .feature-desc { font-size: 0.875rem; color: #6b7280; }
+        @media (prefers-color-scheme: dark) { .feature-desc { color: #9ca3af; } }
+        .faq { margin-bottom: 4rem; }
+        .faq h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; }
+        .faq-item { background: white; padding: 1rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1rem; }
+        @media (prefers-color-scheme: dark) { .faq-item { background: #1f2937; } }
+        .faq-item h3 { font-weight: 600; margin-bottom: 0.5rem; }
+        .faq-item p { font-size: 0.875rem; color: #6b7280; }
+        @media (prefers-color-scheme: dark) { .faq-item p { color: #9ca3af; } }
+        .footer { background: #1f2937; color: #9ca3af; padding: 3rem 0; }
+        @media (prefers-color-scheme: dark) { .footer { background: #111827; } }
+        .footer-content { display: grid; gap: 2rem; margin-bottom: 2rem; }
+        @media (min-width: 768px) { .footer-content { grid-template-columns: repeat(4, 1fr); } }
+        .footer-logo { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .footer-logo-icon { color: #f59e0b; font-size: 1.25rem; }
+        .footer-logo-text { font-weight: 600; color: white; }
+        .footer-section p { font-size: 0.875rem; }
+        .footer-nav h4 { font-weight: 600; color: white; margin-bottom: 1rem; font-size: 1rem; }
+        .footer-nav ul { list-style: none; }
+        .footer-nav li { margin-bottom: 0.5rem; }
+        .footer-nav a { color: #9ca3af; text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+        .footer-nav a:hover { color: white; }
+        .footer-copyright { border-top: 1px solid #374151; padding-top: 2rem; text-align: center; font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <span class="logo-icon">🎡</span>
+                    <span>RandomWheelGame</span>
+                </a>
+                <nav>
+                    <a href="/presets" style="color: #6b7280; text-decoration: none; margin-right: 1rem;">预设转盘</a>
+                    <button style="background: none; border: none; color: #6b7280; cursor: pointer;">🌐 CN</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main container">
+        <div class="hero">
+            <h1>转动转盘做出随机选择</h1>
+            <p>创建您自己的转盘，用于随机决策、抽奖、游戏化教育等...</p>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">添加选项</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">配置</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">开始</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">随机选择</h3>
+                <p class="feature-desc">为任何情况做出公平公正的随机选择，非常适合决策。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">可定制</h3>
+                <p class="feature-desc">从多种颜色主题中选择，调整速度，个性化您的转盘体验。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📤</div>
+                <h3 class="feature-title">分享与保存</h3>
+                <p class="feature-desc">与朋友分享您的自定义转盘或保存以供日后使用。</p>
+            </div>
+        </div>
+
+        <div class="faq">
+            <h2>常见问题</h2>
+            <div class="faq-item">
+                <h3>这个转盘真的是随机的吗？</h3>
+                <p>是的！我们的转盘使用加密安全的随机数生成器，确保每次都能获得公平公正的结果。</p>
+            </div>
+            <div class="faq-item">
+                <h3>我可以保存我的转盘吗？</h3>
+                <p>您的转盘会自动保存在浏览器中。您也可以使用分享按钮与他人分享。</p>
+            </div>
+            <div class="faq-item">
+                <h3>什么是淘汰模式？</h3>
+                <p>启用后，每个中奖项目在被选中后会从转盘中移除。非常适合抽奖活动！</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="footer-logo-icon">🎡</span>
+                        <span class="footer-logo-text">RandomWheelGame</span>
+                    </div>
+                    <p>免费在线随机转盘生成器，帮助您做出随机决定。</p>
+                </div>
+                <nav class="footer-nav">
+                    <h4>产品</h4>
+                    <ul>
+                        <li><a href="/">随机转盘</a></li>
+                        <li><a href="/presets">预设转盘</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-nav">
+                    <h4>资源</h4>
+                    <ul>
+                        <li><a href="/contact">联系我们</a></li>
+                    </ul>
+                </nav>
+                <nav class="footer-nav">
+                    <h4>法律</h4>
+                    <ul>
+                        <li><a href="/privacy">隐私政策</a></li>
+                        <li><a href="/terms">服务条款</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="footer-copyright">
+                <p>© 2026 RandomWheelGame. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
