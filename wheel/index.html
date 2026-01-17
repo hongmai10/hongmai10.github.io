@@ -59,7 +59,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 30px;
-            height: 40px;
+            height: 50px;
             z-index: 10;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
@@ -84,8 +84,9 @@
             left: 50%;
             transform: translateX(-50%);
             width: 8px;
-            height: 15px;
+            height: 25px;
             background: #111827;
+            border-radius: 0 0 4px 4px;
         }
         
         .spin-button {
@@ -394,9 +395,9 @@
         let wheelRadius = 0;
         let centerX = 0;
         let centerY = 0;
-        let animationId = null;
-        let spinStartTime = 0;
         let spinAnimationId = null;
+        let spinStartTime = 0;
+        let winningNumber = 1;
         
         // 初始化转盘
         function initWheel() {
@@ -424,7 +425,7 @@
             const b = parseInt(hex.substr(4, 2), 16);
             
             // 创建浅色版本（加白）
-            const lightenAmount = 80; // 增加亮度值
+            const lightenAmount = 60; // 增加亮度值
             const lightR = Math.min(255, r + lightenAmount);
             const lightG = Math.min(255, g + lightenAmount);
             const lightB = Math.min(255, b + lightenAmount);
@@ -533,6 +534,33 @@
             wheelWrapper.classList.remove('spinning');
         }
         
+        // 计算指针指向的数字
+        function getCurrentNumber() {
+            // 计算当前指针指向的角度（指针在顶部，即-90度或270度）
+            // 由于canvas的0度是右侧，所以需要转换
+            // 我们计算当前旋转后，哪个扇区的中心最接近指针位置
+            const pointerAngle = -Math.PI / 2; // 指针指向-90度（顶部）
+            
+            // 调整角度，使0-2π范围内
+            let adjustedAngle = pointerAngle - currentRotation;
+            while (adjustedAngle < 0) {
+                adjustedAngle += Math.PI * 2;
+            }
+            while (adjustedAngle >= Math.PI * 2) {
+                adjustedAngle -= Math.PI * 2;
+            }
+            
+            // 计算扇区索引
+            const sectorAngle = (Math.PI * 2) / config.sectors;
+            let sectorIndex = Math.floor(adjustedAngle / sectorAngle);
+            
+            // 调整索引，因为扇区0从角度0开始
+            sectorIndex = (sectorIndex + config.sectors) % config.sectors;
+            
+            // 返回数字（1-50）
+            return sectorIndex + 1;
+        }
+        
         // 旋转转盘
         function spinWheel() {
             if (isSpinning) return;
@@ -543,15 +571,32 @@
             wheelWrapper.classList.add('spinning');
             
             // 随机选择中奖数字 (1-50)
-            const winningNumber = Math.floor(Math.random() * config.sectors) + 1;
+            winningNumber = Math.floor(Math.random() * config.sectors) + 1;
             
-            // 计算中奖扇区应该停在哪里（指针在顶部）
-            // 指针指向0度（向上），所以需要让中奖扇区停在指针位置
-            const targetAngle = -((winningNumber - 1) * (360 / config.sectors)) * (Math.PI / 180);
+            // 计算需要旋转的总角度
+            // 我们想要指针最终指向winningNumber对应的扇区
+            // 每个扇区中心的角度 = (winningNumber - 1 + 0.5) * sectorAngle
+            // 指针在顶部（-π/2），所以需要旋转到这个扇区中心到达顶部
+            const sectorAngle = (Math.PI * 2) / config.sectors;
+            const targetSectorCenter = (winningNumber - 1 + 0.5) * sectorAngle;
             
-            // 总旋转角度 = 多转几圈 + 目标角度 - 当前角度
-            const totalRotation = (Math.PI * 2 * config.spinRounds) + targetAngle - currentRotation;
+            // 当前扇区中心在 currentRotation + targetSectorCenter
+            // 我们需要旋转到使这个扇区中心到达顶部（-π/2）
+            // 所以需要旋转的角度是：(-π/2) - (currentRotation + targetSectorCenter)
+            // 再加上5圈
+            const targetRotation = -Math.PI / 2 - targetSectorCenter;
             
+            // 计算从当前角度到目标角度需要旋转的角度（确保为正）
+            let rotationNeeded = targetRotation - currentRotation;
+            while (rotationNeeded < 0) {
+                rotationNeeded += Math.PI * 2;
+            }
+            
+            // 加上5圈
+            const totalRotation = rotationNeeded + Math.PI * 2 * config.spinRounds;
+            
+            // 记录开始旋转时的角度和时间
+            const startRotation = currentRotation;
             spinStartTime = Date.now();
             
             function animateSpin() {
@@ -563,7 +608,7 @@
                 const easedProgress = easeOutCubic(progress);
                 
                 // 计算当前旋转角度
-                currentRotation = (totalRotation * easedProgress) % (Math.PI * 2);
+                currentRotation = startRotation + totalRotation * easedProgress;
                 
                 drawWheel();
                 
@@ -572,15 +617,18 @@
                     spinAnimationId = requestAnimationFrame(animateSpin);
                 } else {
                     // 旋转结束，确保停在正确位置
-                    currentRotation = (config.spinRounds * Math.PI * 2 + targetAngle) % (Math.PI * 2);
+                    currentRotation = startRotation + totalRotation;
                     drawWheel();
+                    
+                    // 验证指针指向的数字是否正确
+                    const finalNumber = getCurrentNumber();
                     
                     // 停止动画
                     stopSpinAnimation();
                     
                     // 等待0.5秒后显示弹窗
                     setTimeout(() => {
-                        winnerNumber.textContent = winningNumber;
+                        winnerNumber.textContent = finalNumber;
                         winnerModal.classList.add('show');
                     }, 500);
                 }
