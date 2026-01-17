@@ -55,14 +55,37 @@
         
         .wheel-pointer {
             position: absolute;
-            top: -30px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 40px;
-            height: 60px;
-            background: #ef4444;
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            width: 30px;
+            height: 40px;
             z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .wheel-pointer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #111827;
+        }
+        
+        .wheel-pointer::after {
+            content: "";
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 15px;
+            background: #111827;
         }
         
         .spin-button {
@@ -74,18 +97,20 @@
             height: 80px;
             border-radius: 50%;
             background: white;
-            border: 4px solid #f59e0b;
             color: #111827;
             font-weight: bold;
             font-size: 1.2rem;
             cursor: pointer;
             z-index: 20;
-            transition: all 0.2s;
+            transition: transform 0.2s;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .spin-button:hover {
-            background: #fef3c7;
             transform: translate(-50%, -50%) scale(1.05);
         }
         
@@ -96,6 +121,16 @@
         .spin-button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+        }
+        
+        .spinning .spin-button {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
         }
         
         /* 中奖弹窗样式 */
@@ -351,6 +386,7 @@
         const winnerModal = document.getElementById('winnerModal');
         const winnerNumber = document.getElementById('winnerNumber');
         const confirmButton = document.getElementById('confirmButton');
+        const wheelWrapper = document.querySelector('.wheel-wrapper');
         
         // 转盘状态
         let isSpinning = false;
@@ -358,6 +394,9 @@
         let wheelRadius = 0;
         let centerX = 0;
         let centerY = 0;
+        let animationId = null;
+        let spinStartTime = 0;
+        let spinAnimationId = null;
         
         // 初始化转盘
         function initWheel() {
@@ -372,6 +411,31 @@
             centerY = size / 2;
             
             drawWheel();
+        }
+        
+        // 创建渐变色
+        function createSectorGradient(baseColor, startX, startY, endX, endY) {
+            const gradient = ctx.createLinearGradient(startX, startY, endX, endY);
+            
+            // 将基础颜色转换为RGB
+            const hex = baseColor.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            
+            // 创建浅色版本（加白）
+            const lightenAmount = 80; // 增加亮度值
+            const lightR = Math.min(255, r + lightenAmount);
+            const lightG = Math.min(255, g + lightenAmount);
+            const lightB = Math.min(255, b + lightenAmount);
+            const lightColor = `rgb(${lightR}, ${lightG}, ${lightB})`;
+            
+            // 设置渐变：从外部的原色到内部的浅色
+            gradient.addColorStop(0, baseColor); // 外部
+            gradient.addColorStop(0.7, baseColor); // 中间偏外
+            gradient.addColorStop(1, lightColor); // 内部（最浅）
+            
+            return gradient;
         }
         
         // 绘制转盘
@@ -396,24 +460,37 @@
                 const startAngle = i * angleStep + currentRotation;
                 const endAngle = (i + 1) * angleStep + currentRotation;
                 
-                // 选择颜色
+                // 选择基础颜色
                 const colorIndex = i % config.colors.length;
-                const color = config.colors[colorIndex];
+                const baseColor = config.colors[colorIndex];
+                
+                // 计算扇区内外的点用于渐变
+                const innerRadius = wheelRadius * 0.1; // 内部半径
+                const outerRadius = wheelRadius; // 外部半径
+                
+                // 扇区中间点的内外坐标
+                const middleAngle = startAngle + angleStep / 2;
+                const innerX = centerX + Math.cos(middleAngle) * innerRadius;
+                const innerY = centerY + Math.sin(middleAngle) * innerRadius;
+                const outerX = centerX + Math.cos(middleAngle) * outerRadius;
+                const outerY = centerY + Math.sin(middleAngle) * outerRadius;
+                
+                // 创建扇区渐变
+                const sectorGradient = createSectorGradient(baseColor, outerX, outerY, innerX, innerY);
                 
                 // 绘制扇区
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, wheelRadius, startAngle, endAngle);
                 ctx.closePath();
-                ctx.fillStyle = color;
+                ctx.fillStyle = sectorGradient;
                 ctx.fill();
                 ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 1;
                 ctx.stroke();
                 
                 // 绘制数字
                 const number = i + 1;
-                const middleAngle = startAngle + angleStep / 2;
                 const textRadius = wheelRadius * 0.7;
                 const textX = centerX + Math.cos(middleAngle) * textRadius;
                 const textY = centerY + Math.sin(middleAngle) * textRadius;
@@ -431,17 +508,29 @@
             
             // 绘制中心圆
             ctx.beginPath();
-            ctx.arc(centerX, centerY, wheelRadius * 0.1, 0, Math.PI * 2);
+            ctx.arc(centerX, centerY, wheelRadius * 0.08, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#d1d5db';
             ctx.stroke();
         }
         
         // 缓动函数 - 先快后慢
-        function easeOut(t) {
+        function easeOutCubic(t) {
             return 1 - Math.pow(1 - t, 3);
+        }
+        
+        // 停止旋转动画
+        function stopSpinAnimation() {
+            if (spinAnimationId) {
+                cancelAnimationFrame(spinAnimationId);
+                spinAnimationId = null;
+            }
+            isSpinning = false;
+            spinButton.disabled = false;
+            spinButton.textContent = "SPIN";
+            wheelWrapper.classList.remove('spinning');
         }
         
         // 旋转转盘
@@ -450,47 +539,54 @@
             
             isSpinning = true;
             spinButton.disabled = true;
+            spinButton.textContent = "...";
+            wheelWrapper.classList.add('spinning');
             
             // 随机选择中奖数字 (1-50)
             const winningNumber = Math.floor(Math.random() * config.sectors) + 1;
             
             // 计算中奖扇区应该停在哪里（指针在顶部）
-            // 我们想让指针指向中奖扇区，所以需要计算转盘需要旋转多少度
-            const targetAngle = -((winningNumber - 1) * (360 / config.sectors) - 90) * (Math.PI / 180);
+            // 指针指向0度（向上），所以需要让中奖扇区停在指针位置
+            const targetAngle = -((winningNumber - 1) * (360 / config.sectors)) * (Math.PI / 180);
             
-            // 总旋转角度 = 多转几圈 + 目标角度
+            // 总旋转角度 = 多转几圈 + 目标角度 - 当前角度
             const totalRotation = (Math.PI * 2 * config.spinRounds) + targetAngle - currentRotation;
             
-            let startTime = null;
+            spinStartTime = Date.now();
             
-            function animateSpin(timestamp) {
-                if (!startTime) startTime = timestamp;
-                const elapsed = timestamp - startTime;
+            function animateSpin() {
+                const now = Date.now();
+                const elapsed = now - spinStartTime;
                 const progress = Math.min(elapsed / config.spinDuration, 1);
                 
-                // 使用缓动函数
-                const easedProgress = easeOut(progress);
+                // 使用缓动函数计算当前进度
+                const easedProgress = easeOutCubic(progress);
                 
                 // 计算当前旋转角度
-                currentRotation += (totalRotation / config.spinDuration) * (elapsed - (timestamp - elapsed)) * 0.016;
-                currentRotation = currentRotation % (Math.PI * 2);
+                currentRotation = (totalRotation * easedProgress) % (Math.PI * 2);
                 
                 drawWheel();
                 
                 if (progress < 1) {
-                    requestAnimationFrame(animateSpin);
+                    // 继续旋转
+                    spinAnimationId = requestAnimationFrame(animateSpin);
                 } else {
-                    // 旋转结束
-                    isSpinning = false;
-                    spinButton.disabled = false;
+                    // 旋转结束，确保停在正确位置
+                    currentRotation = (config.spinRounds * Math.PI * 2 + targetAngle) % (Math.PI * 2);
+                    drawWheel();
                     
-                    // 显示中奖弹窗
-                    winnerNumber.textContent = winningNumber;
-                    winnerModal.classList.add('show');
+                    // 停止动画
+                    stopSpinAnimation();
+                    
+                    // 等待0.5秒后显示弹窗
+                    setTimeout(() => {
+                        winnerNumber.textContent = winningNumber;
+                        winnerModal.classList.add('show');
+                    }, 500);
                 }
             }
             
-            requestAnimationFrame(animateSpin);
+            spinAnimationId = requestAnimationFrame(animateSpin);
         }
         
         // 关闭弹窗
