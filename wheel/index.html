@@ -15,9 +15,21 @@
     <meta property="og:url" content="https://cn.randomwheelgame.com"/>
     <meta property="og:type" content="website"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎡</text></svg>"/>
+    
+    <!-- 引入Google Inter字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f3f4f6; color: #111827; line-height: 1.5; }
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: #f3f4f6; 
+            color: #111827; 
+            line-height: 1.5; 
+            font-weight: 400;
+        }
         @media (prefers-color-scheme: dark) { body { background: #111827; color: #f9fafb; } }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
         .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 1rem 0; }
@@ -53,15 +65,16 @@
             height: 100%;
         }
         
+        /* 修改指针样式 - 只保留三角形 */
         .wheel-pointer {
             position: absolute;
-            top: -25px;
+            top: -20px; /* 调整位置，一半在外面 */
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             z-index: 10;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
         }
         
         .wheel-pointer::before {
@@ -72,21 +85,9 @@
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #111827;
-        }
-        
-        .wheel-pointer::after {
-            content: "";
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 25px;
-            background: #111827;
-            border-radius: 0 0 4px 4px;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #111827;
         }
         
         .spin-button {
@@ -109,6 +110,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
         }
         
         .spin-button:hover {
@@ -134,7 +137,7 @@
             100% { opacity: 0.7; }
         }
         
-        /* 中奖弹窗样式 */
+        /* 中奖弹窗样式 - 修改后 */
         .winner-modal {
             position: fixed;
             top: 0;
@@ -175,56 +178,140 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
-        .winner-number {
-            font-size: 5rem;
-            font-weight: bold;
-            color: #f59e0b;
-            margin: 1rem 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        /* 奖杯容器 */
+        .trophy-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 橙黄渐变圆形 */
+        .trophy-circle {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            animation: trophyBounce 1s infinite ease-in-out;
+        }
+        
+        /* 跳动动画 */
+        @keyframes trophyBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* 扩散波纹效果 */
+        .trophy-ripple {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.8) 0%, rgba(251, 191, 36, 0.8) 100%);
+            z-index: 0;
+            animation: ripple 1s infinite;
+            opacity: 0;
+        }
+        
+        /* 波纹淡出扩散动画 */
+        @keyframes ripple {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+            }
+        }
+        
+        .trophy-icon {
+            font-size: 60px;
+            z-index: 2;
+            position: relative;
+            animation: iconBounce 1s infinite ease-in-out;
+        }
+        
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
         
         .winner-title {
             font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #111827;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .winner-title {
+                color: #f9fafb;
+            }
+        }
+        
+        .winner-number {
+            font-size: 5rem;
+            font-weight: 800;
+            margin: 1rem 0 1.5rem;
+            font-family: 'Inter', sans-serif;
+            /* 深色蓝紫渐变 */
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
         }
         
         .confirm-button {
-            background: #f59e0b;
+            /* 深色蓝紫渐变背景 */
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
             border: none;
             padding: 0.8rem 2.5rem;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 600;
             border-radius: 0.5rem;
             cursor: pointer;
             margin-top: 1.5rem;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
         }
         
         .confirm-button:hover {
-            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
         
         .steps { display: flex; justify-content: center; gap: 3rem; margin-bottom: 4rem; }
         .step { text-align: center; }
-        .step-number { width: 2.5rem; height: 2.5rem; background: #fbbf24; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 0.5rem; }
-        .step-text { font-size: 0.875rem; color: #6b7280; }
+        .step-number { width: 2.5rem; height: 2.5rem; background: #fbbf24; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 0.5rem; font-family: 'Inter', sans-serif; }
+        .step-text { font-size: 0.875rem; color: #6b7280; font-family: 'Inter', sans-serif; }
         @media (prefers-color-scheme: dark) { .step-text { color: #9ca3af; } }
         .features { display: grid; gap: 1.5rem; margin-bottom: 4rem; }
         @media (min-width: 768px) { .features { grid-template-columns: repeat(3, 1fr); } }
         .feature-card { background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         @media (prefers-color-scheme: dark) { .feature-card { background: #1f2937; } }
         .feature-icon { font-size: 1.875rem; margin-bottom: 0.75rem; }
-        .feature-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; }
-        .feature-desc { font-size: 0.875rem; color: #6b7280; }
+        .feature-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif; }
+        .feature-desc { font-size: 0.875rem; color: #6b7280; font-family: 'Inter', sans-serif; }
         @media (prefers-color-scheme: dark) { .feature-desc { color: #9ca3af; } }
         .faq { margin-bottom: 4rem; }
-        .faq h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; }
+        .faq h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; font-family: 'Inter', sans-serif; }
         .faq-item { background: white; padding: 1rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1rem; }
         @media (prefers-color-scheme: dark) { .faq-item { background: #1f2937; } }
-        .faq-item h3 { font-weight: 600; margin-bottom: 0.5rem; }
-        .faq-item p { font-size: 0.875rem; color: #6b7280; }
+        .faq-item h3 { font-weight: 600; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif; }
+        .faq-item p { font-size: 0.875rem; color: #6b7280; font-family: 'Inter', sans-serif; }
         @media (prefers-color-scheme: dark) { .faq-item p { color: #9ca3af; } }
         .footer { background: #1f2937; color: #9ca3af; padding: 3rem 0; }
         @media (prefers-color-scheme: dark) { .footer { background: #111827; } }
@@ -232,14 +319,14 @@
         @media (min-width: 768px) { .footer-content { grid-template-columns: repeat(4, 1fr); } }
         .footer-logo { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
         .footer-logo-icon { color: #f59e0b; font-size: 1.25rem; }
-        .footer-logo-text { font-weight: 600; color: white; }
-        .footer-section p { font-size: 0.875rem; }
-        .footer-nav h4 { font-weight: 600; color: white; margin-bottom: 1rem; font-size: 1rem; }
+        .footer-logo-text { font-weight: 600; color: white; font-family: 'Inter', sans-serif; }
+        .footer-section p { font-size: 0.875rem; font-family: 'Inter', sans-serif; }
+        .footer-nav h4 { font-weight: 600; color: white; margin-bottom: 1rem; font-size: 1rem; font-family: 'Inter', sans-serif; }
         .footer-nav ul { list-style: none; }
         .footer-nav li { margin-bottom: 0.5rem; }
-        .footer-nav a { color: #9ca3af; text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+        .footer-nav a { color: #9ca3af; text-decoration: none; font-size: 0.875rem; transition: color 0.2s; font-family: 'Inter', sans-serif; }
         .footer-nav a:hover { color: white; }
-        .footer-copyright { border-top: 1px solid #374151; padding-top: 2rem; text-align: center; font-size: 0.875rem; }
+        .footer-copyright { border-top: 1px solid #374151; padding-top: 2rem; text-align: center; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body>
@@ -268,11 +355,17 @@
             </div>
         </div>
         
-        <!-- 中奖弹窗 -->
+        <!-- 中奖弹窗 - 修改后 -->
         <div id="winnerModal" class="winner-modal">
             <div class="winner-content">
+                <div class="trophy-container">
+                    <div class="trophy-circle">
+                        <div class="trophy-icon">🏆</div>
+                    </div>
+                    <div class="trophy-ripple"></div>
+                </div>
+                
                 <div class="winner-title">恭喜中奖</div>
-                <div>数字</div>
                 <div id="winnerNumber" class="winner-number">1</div>
                 <button id="confirmButton" class="confirm-button">确定</button>
             </div>
@@ -438,13 +531,10 @@
             
             return gradient;
         }
-        
-        // 绘制转盘
+
         function drawWheel() {
-            // 清除画布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 绘制转盘背景
+
             ctx.beginPath();
             ctx.arc(centerX, centerY, wheelRadius, 0, Math.PI * 2);
             ctx.fillStyle = '#f3f4f6';
@@ -452,34 +542,27 @@
             ctx.lineWidth = 3;
             ctx.strokeStyle = '#d1d5db';
             ctx.stroke();
-            
-            // 计算每个扇区的角度
+
             const angleStep = (Math.PI * 2) / config.sectors;
-            
-            // 绘制扇区
+
             for (let i = 0; i < config.sectors; i++) {
                 const startAngle = i * angleStep + currentRotation;
                 const endAngle = (i + 1) * angleStep + currentRotation;
-                
-                // 选择基础颜色
+
                 const colorIndex = i % config.colors.length;
                 const baseColor = config.colors[colorIndex];
-                
-                // 计算扇区内外的点用于渐变
-                const innerRadius = wheelRadius * 0.1; // 内部半径
-                const outerRadius = wheelRadius; // 外部半径
-                
-                // 扇区中间点的内外坐标
+
+                const innerRadius = wheelRadius * 0.2;
+                const outerRadius = wheelRadius;
+
                 const middleAngle = startAngle + angleStep / 2;
                 const innerX = centerX + Math.cos(middleAngle) * innerRadius;
                 const innerY = centerY + Math.sin(middleAngle) * innerRadius;
                 const outerX = centerX + Math.cos(middleAngle) * outerRadius;
                 const outerY = centerY + Math.sin(middleAngle) * outerRadius;
-                
-                // 创建扇区渐变
+
                 const sectorGradient = createSectorGradient(baseColor, outerX, outerY, innerX, innerY);
-                
-                // 绘制扇区
+
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, wheelRadius, startAngle, endAngle);
@@ -489,8 +572,7 @@
                 ctx.strokeStyle = '#ffffff';
                 ctx.lineWidth = 1;
                 ctx.stroke();
-                
-                // 绘制数字
+
                 const number = i + 1;
                 const textRadius = wheelRadius * 0.7;
                 const textX = centerX + Math.cos(middleAngle) * textRadius;
@@ -502,12 +584,11 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillStyle = '#111827';
-                ctx.font = `${Math.max(12, wheelRadius / 20)}px Arial`;
+                ctx.font = `bold ${Math.max(12, wheelRadius / 20)}px 'Inter', Arial`;
                 ctx.fillText(number.toString(), 0, 0);
                 ctx.restore();
             }
-            
-            // 绘制中心圆
+
             ctx.beginPath();
             ctx.arc(centerX, centerY, wheelRadius * 0.08, 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
@@ -516,13 +597,11 @@
             ctx.strokeStyle = '#d1d5db';
             ctx.stroke();
         }
-        
-        // 缓动函数 - 先快后慢
+
         function easeOutCubic(t) {
             return 1 - Math.pow(1 - t, 3);
         }
-        
-        // 停止旋转动画
+
         function stopSpinAnimation() {
             if (spinAnimationId) {
                 cancelAnimationFrame(spinAnimationId);
@@ -533,15 +612,10 @@
             spinButton.textContent = "SPIN";
             wheelWrapper.classList.remove('spinning');
         }
-        
-        // 计算指针指向的数字
+
         function getCurrentNumber() {
-            // 计算当前指针指向的角度（指针在顶部，即-90度或270度）
-            // 由于canvas的0度是右侧，所以需要转换
-            // 我们计算当前旋转后，哪个扇区的中心最接近指针位置
-            const pointerAngle = -Math.PI / 2; // 指针指向-90度（顶部）
-            
-            // 调整角度，使0-2π范围内
+            const pointerAngle = -Math.PI / 2;
+
             let adjustedAngle = pointerAngle - currentRotation;
             while (adjustedAngle < 0) {
                 adjustedAngle += Math.PI * 2;
@@ -549,19 +623,15 @@
             while (adjustedAngle >= Math.PI * 2) {
                 adjustedAngle -= Math.PI * 2;
             }
-            
-            // 计算扇区索引
+
             const sectorAngle = (Math.PI * 2) / config.sectors;
             let sectorIndex = Math.floor(adjustedAngle / sectorAngle);
-            
-            // 调整索引，因为扇区0从角度0开始
+
             sectorIndex = (sectorIndex + config.sectors) % config.sectors;
-            
-            // 返回数字（1-50）
+
             return sectorIndex + 1;
         }
-        
-        // 旋转转盘
+
         function spinWheel() {
             if (isSpinning) return;
             
@@ -569,33 +639,21 @@
             spinButton.disabled = true;
             spinButton.textContent = "...";
             wheelWrapper.classList.add('spinning');
-            
-            // 随机选择中奖数字 (1-50)
+
             winningNumber = Math.floor(Math.random() * config.sectors) + 1;
-            
-            // 计算需要旋转的总角度
-            // 我们想要指针最终指向winningNumber对应的扇区
-            // 每个扇区中心的角度 = (winningNumber - 1 + 0.5) * sectorAngle
-            // 指针在顶部（-π/2），所以需要旋转到这个扇区中心到达顶部
+
             const sectorAngle = (Math.PI * 2) / config.sectors;
             const targetSectorCenter = (winningNumber - 1 + 0.5) * sectorAngle;
-            
-            // 当前扇区中心在 currentRotation + targetSectorCenter
-            // 我们需要旋转到使这个扇区中心到达顶部（-π/2）
-            // 所以需要旋转的角度是：(-π/2) - (currentRotation + targetSectorCenter)
-            // 再加上5圈
+
             const targetRotation = -Math.PI / 2 - targetSectorCenter;
-            
-            // 计算从当前角度到目标角度需要旋转的角度（确保为正）
+
             let rotationNeeded = targetRotation - currentRotation;
             while (rotationNeeded < 0) {
                 rotationNeeded += Math.PI * 2;
             }
-            
-            // 加上5圈
+
             const totalRotation = rotationNeeded + Math.PI * 2 * config.spinRounds;
-            
-            // 记录开始旋转时的角度和时间
+
             const startRotation = currentRotation;
             spinStartTime = Date.now();
             
@@ -603,30 +661,23 @@
                 const now = Date.now();
                 const elapsed = now - spinStartTime;
                 const progress = Math.min(elapsed / config.spinDuration, 1);
-                
-                // 使用缓动函数计算当前进度
+
                 const easedProgress = easeOutCubic(progress);
-                
-                // 计算当前旋转角度
+
                 currentRotation = startRotation + totalRotation * easedProgress;
                 
                 drawWheel();
                 
                 if (progress < 1) {
-                    // 继续旋转
                     spinAnimationId = requestAnimationFrame(animateSpin);
                 } else {
-                    // 旋转结束，确保停在正确位置
                     currentRotation = startRotation + totalRotation;
                     drawWheel();
-                    
-                    // 验证指针指向的数字是否正确
+
                     const finalNumber = getCurrentNumber();
-                    
-                    // 停止动画
+
                     stopSpinAnimation();
-                    
-                    // 等待0.5秒后显示弹窗
+
                     setTimeout(() => {
                         winnerNumber.textContent = finalNumber;
                         winnerModal.classList.add('show');
@@ -636,20 +687,16 @@
             
             spinAnimationId = requestAnimationFrame(animateSpin);
         }
-        
-        // 关闭弹窗
+
         function closeWinnerModal() {
             winnerModal.classList.remove('show');
         }
-        
-        // 事件监听
+
         spinButton.addEventListener('click', spinWheel);
         confirmButton.addEventListener('click', closeWinnerModal);
-        
-        // 窗口大小变化时重新初始化
+
         window.addEventListener('resize', initWheel);
-        
-        // 页面加载完成后初始化转盘
+
         window.addEventListener('load', initWheel);
     </script>
 </body>
