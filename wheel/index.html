@@ -15,12 +15,11 @@
     <meta property="og:url" content="https://cn.randomwheelgame.com"/>
     <meta property="og:type" content="website"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎡</text></svg>"/>
-    
-    <!-- 引入Google Inter字体 -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -42,8 +41,7 @@
         .hero h1 { font-size: 1.875rem; font-weight: 700; margin-bottom: 1rem; }
         .hero p { color: #6b7280; font-size: 1.125rem; }
         @media (prefers-color-scheme: dark) { .hero p { color: #9ca3af; } }
-        
-        /* 转盘容器样式 */
+
         .wheel-container {
             display: flex;
             flex-direction: column;
@@ -64,11 +62,10 @@
             width: 100%;
             height: 100%;
         }
-        
-        /* 修改指针样式 - 只保留三角形 */
+
         .wheel-pointer {
             position: absolute;
-            top: -20px; /* 调整位置，一半在外面 */
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
             width: 40px;
@@ -136,8 +133,7 @@
             50% { opacity: 1; }
             100% { opacity: 0.7; }
         }
-        
-        /* 中奖弹窗样式 - 修改后 */
+
         .winner-modal {
             position: fixed;
             top: 0;
@@ -177,8 +173,7 @@
             0% { transform: scale(0.7); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
-        /* 奖杯容器 */
+
         .trophy-container {
             position: relative;
             width: 120px;
@@ -188,8 +183,7 @@
             align-items: center;
             justify-content: center;
         }
-        
-        /* 橙黄渐变圆形 */
+
         .trophy-circle {
             position: absolute;
             width: 120px;
@@ -202,14 +196,12 @@
             z-index: 1;
             animation: trophyBounce 1s infinite ease-in-out;
         }
-        
-        /* 跳动动画 */
+
         @keyframes trophyBounce {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        
-        /* 扩散波纹效果 */
+
         .trophy-ripple {
             position: absolute;
             width: 120px;
@@ -220,8 +212,7 @@
             animation: ripple 1s infinite;
             opacity: 0;
         }
-        
-        /* 波纹淡出扩散动画 */
+
         @keyframes ripple {
             0% {
                 transform: scale(0.8);
@@ -273,7 +264,6 @@
         }
         
         .confirm-button {
-            /* 深色蓝紫渐变背景 */
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
             border: none;
@@ -346,7 +336,6 @@
     </header>
 
     <main class="main container">
-        <!-- 转盘部分 -->
         <div class="wheel-container">
             <div class="wheel-wrapper">
                 <canvas id="wheelCanvas" class="wheel-canvas"></canvas>
@@ -354,8 +343,7 @@
                 <button id="spinButton" class="spin-button">SPIN</button>
             </div>
         </div>
-        
-        <!-- 中奖弹窗 - 修改后 -->
+
         <div id="winnerModal" class="winner-modal">
             <div class="winner-content">
                 <div class="trophy-container">
@@ -371,7 +359,6 @@
             </div>
         </div>
 
-        <!-- 静态介绍部分 -->
         <div class="hero">
             <h1>转动转盘做出随机选择</h1>
             <p>创建您自己的转盘，用于随机决策、抽奖、游戏化教育等...</p>
@@ -440,21 +427,21 @@
                 <nav class="footer-nav">
                     <h4>产品</h4>
                     <ul>
-                        <li><a href="/">随机转盘</a></li>
-                        <li><a href="/presets">预设转盘</a></li>
+                        <li><a href="./">随机转盘</a></li>
+                        <li><a href="./presets">预设转盘</a></li>
                     </ul>
                 </nav>
                 <nav class="footer-nav">
                     <h4>资源</h4>
                     <ul>
-                        <li><a href="/contact">联系我们</a></li>
+                        <li><a href="./contact">联系我们</a></li>
                     </ul>
                 </nav>
                 <nav class="footer-nav">
                     <h4>法律</h4>
                     <ul>
-                        <li><a href="/privacy">隐私政策</a></li>
-                        <li><a href="/terms">服务条款</a></li>
+                        <li><a href="./privacy">隐私政策</a></li>
+                        <li><a href="./terms">服务条款</a></li>
                     </ul>
                 </nav>
             </div>
@@ -465,15 +452,13 @@
     </footer>
 
     <script>
-        // 转盘配置
         const config = {
             sectors: 50,
             colors: ['#848ff9', '#f472b6', '#fbc025', '#a4e636', '#63a8fa', '#ef6d6d'],
-            spinDuration: 3000, // 3秒
-            spinRounds: 5 // 旋转圈数
+            spinDuration: 3000,
+            spinRounds: 5
         };
-        
-        // DOM元素
+
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
         const spinButton = document.getElementById('spinButton');
