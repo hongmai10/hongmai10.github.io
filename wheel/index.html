@@ -21,7 +21,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        ▪ { margin: 0; padding: 0; box-sizing: border-box; }
+
         body { 
             font-family: 'Inter', system-ui, -apple-system, sans-serif; 
             background: #f3f4f6; 
@@ -42,47 +43,25 @@
         .hero p { color: #6b7280; font-size: 1.125rem; }
         @media (prefers-color-scheme: dark) { .hero p { color: #9ca3af; } }
 
-        /* 修改的布局部分 */
-        .content-container {
+        .wheel-container {
             display: flex;
-            flex-direction: row;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             margin-bottom: 3rem;
             gap: 2rem;
         }
         
-        .wheel-section {
-            flex: 2;
-            position: relative;
-        }
-        
-        .status-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .wheel-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
         .wheel-wrapper {
             position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
+            width: 500px;
+            height: 500px;
+            max-width: 60vw;
+            max-height: 60vw;
         }
         
         .wheel-canvas {
             width: 100%;
-            height: auto;
-            max-width: 100%;
-            display: block;
+            height: 100%;
         }
 
         .wheel-pointer {
@@ -155,139 +134,50 @@
             50% { opacity: 1; }
             100% { opacity: 0.7; }
         }
-        
-        /* 状态面板样式 */
-        .status-panel {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 2rem;
+
+        /* 右侧矩形样式 */
+        .right-panel {
+            flex: 1;
+            max-width: 30%;
             height: 500px;
+            background-color: rgba(243, 244, 246, 0.9);
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .right-content {
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 2rem;
         }
         
-        @media (prefers-color-scheme: dark) {
-            .status-panel {
-                background: rgba(31, 41, 55, 0.3);
-                border: 1px solid rgba(255, 255, 255, 0.05);
-            }
-        }
-        
-        .status-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: #111827;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .status-title {
-                color: #f9fafb;
-            }
-        }
-        
-        .status-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            width: 100%;
-        }
-        
-        .status-message {
+        .status-text {
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
+            font-weight: 600;
             color: #111827;
-            min-height: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        @media (prefers-color-scheme: dark) {
-            .status-message {
-                color: #f9fafb;
-            }
-        }
-        
-        .status-error {
-            color: #ef4444;
+            margin-bottom: 1.5rem;
+            min-height: 2.5rem;
         }
         
         .reload-button {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            color: white;
+            background: none;
             border: none;
-            padding: 0.8rem 1.8rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
+            color: #111827;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.2s;
             font-family: 'Inter', sans-serif;
-            letter-spacing: 0.5px;
-            margin-top: 1rem;
-            display: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
         }
         
         .reload-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+            background-color: rgba(0, 0, 0, 0.05);
         }
         
-        .loading-dots {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .dot {
-            width: 8px;
-            height: 8px;
-            background-color: #4f46e5;
-            border-radius: 50%;
-            animation: dotPulse 1.5s infinite ease-in-out;
-        }
-        
-        .dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes dotPulse {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.3); opacity: 1; }
-        }
-
-        /* 响应式调整 */
-        @media (max-width: 1024px) {
-            .content-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .wheel-section, .status-section {
-                width: 100%;
-                max-width: 500px;
-            }
-            
-            .status-panel {
-                height: auto;
-                min-height: 200px;
-            }
-        }
-
         .winner-modal {
             position: fixed;
             top: 0;
@@ -436,184 +326,40 @@
             box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
         
-        .steps { 
-            display: flex; 
-            justify-content: center; 
-            gap: 3rem; 
-            margin-bottom: 4rem; 
-        }
-        .step { 
-            text-align: center; 
-        }
-        .step-number { 
-            width: 2.5rem; 
-            height: 2.5rem; 
-            background: #fbbf24; 
-            border-radius: 9999px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 700; 
-            margin: 0 auto 0.5rem; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .step-text { 
-            font-size: 0.875rem; 
-            color: #6b7280; 
-            font-family: 'Inter', sans-serif; 
-        }
-        @media (prefers-color-scheme: dark) { 
-            .step-text { 
-                color: #9ca3af; 
-            } 
-        }
-        .features { 
-            display: grid; 
-            gap: 1.5rem; 
-            margin-bottom: 4rem; 
-        }
-        @media (min-width: 768px) { 
-            .features { 
-                grid-template-columns: repeat(3, 1fr); 
-            } 
-        }
-        .feature-card { 
-            background: white; 
-            padding: 1.5rem; 
-            border-radius: 0.75rem; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-        }
-        @media (prefers-color-scheme: dark) { 
-            .feature-card { 
-                background: #1f2937; 
-            } 
-        }
-        .feature-icon { 
-            font-size: 1.875rem; 
-            margin-bottom: 0.75rem; 
-        }
-        .feature-title { 
-            font-weight: 700; 
-            font-size: 1.125rem; 
-            margin-bottom: 0.5rem; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .feature-desc { 
-            font-size: 0.875rem; 
-            color: #6b7280; 
-            font-family: 'Inter', sans-serif; 
-        }
-        @media (prefers-color-scheme: dark) { 
-            .feature-desc { 
-                color: #9ca3af; 
-            } 
-        }
-        .faq { 
-            margin-bottom: 4rem; 
-        }
-        .faq h2 { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
-            text-align: center; 
-            margin-bottom: 1.5rem; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .faq-item { 
-            background: white; 
-            padding: 1rem; 
-            border-radius: 0.5rem; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
-            margin-bottom: 1rem; 
-        }
-        @media (prefers-color-scheme: dark) { 
-            .faq-item { 
-                background: #1f2937; 
-            } 
-        }
-        .faq-item h3 { 
-            font-weight: 600; 
-            margin-bottom: 0.5rem; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .faq-item p { 
-            font-size: 0.875rem; 
-            color: #6b7280; 
-            font-family: 'Inter', sans-serif; 
-        }
-        @media (prefers-color-scheme: dark) { 
-            .faq-item p { 
-                color: #9ca3af; 
-            } 
-        }
-        .footer { 
-            background: #1f2937; 
-            color: #9ca3af; 
-            padding: 3rem 0; 
-        }
-        @media (prefers-color-scheme: dark) { 
-            .footer { 
-                background: #111827; 
-            } 
-        }
-        .footer-content { 
-            display: grid; 
-            gap: 2rem; 
-            margin-bottom: 2rem; 
-        }
-        @media (min-width: 768px) { 
-            .footer-content { 
-                grid-template-columns: repeat(4, 1fr); 
-            } 
-        }
-        .footer-logo { 
-            display: flex; 
-            align-items: center; 
-            gap: 0.5rem; 
-            margin-bottom: 1rem; 
-        }
-        .footer-logo-icon { 
-            color: #f59e0b; 
-            font-size: 1.25rem; 
-        }
-        .footer-logo-text { 
-            font-weight: 600; 
-            color: white; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .footer-section p { 
-            font-size: 0.875rem; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .footer-nav h4 { 
-            font-weight: 600; 
-            color: white; 
-            margin-bottom: 1rem; 
-            font-size: 1rem; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .footer-nav ul { 
-            list-style: none; 
-        }
-        .footer-nav li { 
-            margin-bottom: 0.5rem; 
-        }
-        .footer-nav a { 
-            color: #9ca3af; 
-            text-decoration: none; 
-            font-size: 0.875rem; 
-            transition: color 0.2s; 
-            font-family: 'Inter', sans-serif; 
-        }
-        .footer-nav a:hover { 
-            color: white; 
-        }
-        .footer-copyright { 
-            border-top: 1px solid #374151; 
-            padding-top: 2rem; 
-            text-align: center; 
-            font-size: 0.875rem; 
-            font-family: 'Inter', sans-serif; 
-        }
+        .steps { display: flex; justify-content: center; gap: 3rem; margin-bottom: 4rem; }
+        .step { text-align: center; }
+        .step-number { width: 2.5rem; height: 2.5rem; background: #fbbf24; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 0.5rem; font-family: 'Inter', sans-serif; }
+        .step-text { font-size: 0.875rem; color: #6b7280; font-family: 'Inter', sans-serif; }
+        @media (prefers-color-scheme: dark) { .step-text { color: #9ca3af; } }
+        .features { display: grid; gap: 1.5rem; margin-bottom: 4rem; }
+        @media (min-width: 768px) { .features { grid-template-columns: repeat(3, 1fr); } }
+        .feature-card { background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        @media (prefers-color-scheme: dark) { .feature-card { background: #1f2937; } }
+        .feature-icon { font-size: 1.875rem; margin-bottom: 0.75rem; }
+        .feature-title { font-weight: 700; font-size: 1.125rem; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif; }
+        .feature-desc { font-size: 0.875rem; color: #6b7280; font-family: 'Inter', sans-serif; }
+        @media (prefers-color-scheme: dark) { .feature-desc { color: #9ca3af; } }
+        .faq { margin-bottom: 4rem; }
+        .faq h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; font-family: 'Inter', sans-serif; }
+        .faq-item { background: white; padding: 1rem; border-radius: 0.5rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 1rem; }
+        @media (prefers-color-scheme: dark) { .faq-item { background: #1f2937; } }
+        .faq-item h3 { font-weight: 600; margin-bottom: 0.5rem; font-family: 'Inter', sans-serif; }
+        .faq-item p { font-size: 0.875rem; color: #6b7280; font-family: 'Inter', sans-serif; }
+        @media (prefers-color-scheme: dark) { .faq-item p { color: #9ca3af; } }
+        .footer { background: #1f2937; color: #9ca3af; padding: 3rem 0; }
+        @media (prefers-color-scheme: dark) { .footer { background: #111827; } }
+        .footer-content { display: grid; gap: 2rem; margin-bottom: 2rem; }
+        @media (min-width: 768px) { .footer-content { grid-template-columns: repeat(4, 1fr); } }
+        .footer-logo { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .footer-logo-icon { color: #f59e0b; font-size: 1.25rem; }
+        .footer-logo-text { font-weight: 600; color: white; font-family: 'Inter', sans-serif; }
+        .footer-section p { font-size: 0.875rem; font-family: 'Inter', sans-serif; }
+        .footer-nav h4 { font-weight: 600; color: white; margin-bottom: 1rem; font-size: 1rem; font-family: 'Inter', sans-serif; }
+        .footer-nav ul { list-style: none; }
+        .footer-nav li { margin-bottom: 0.5rem; }
+        .footer-nav a { color: #9ca3af; text-decoration: none; font-size: 0.875rem; transition: color 0.2s; font-family: 'Inter', sans-serif; }
+        .footer-nav a:hover { color: white; }
+        .footer-copyright { border-top: 1px solid #374151; padding-top: 2rem; text-align: center; font-size: 0.875rem; font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body>
@@ -633,30 +379,17 @@
     </header>
 
     <main class="main container">
-        <!-- 修改后的布局 -->
-        <div class="content-container">
-            <div class="wheel-section">
-                <div class="wheel-container">
-                    <div class="wheel-wrapper">
-                        <canvas id="wheelCanvas" class="wheel-canvas"></canvas>
-                        <div class="wheel-pointer"></div>
-                        <button id="spinButton" class="spin-button">SPIN</button>
-                    </div>
-                </div>
+        <div class="wheel-container">
+            <div class="wheel-wrapper">
+                <canvas id="wheelCanvas" class="wheel-canvas"></canvas>
+                <div class="wheel-pointer"></div>
+                <button id="spinButton" class="spin-button">SPIN</button>
             </div>
             
-            <div class="status-section">
-                <div class="status-panel">
-                    <h2 class="status-title">转盘状态</h2>
-                    <div class="status-content">
-                        <div id="statusMessage" class="status-message">加载中</div>
-                        <div class="loading-dots">
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                            <div class="dot"></div>
-                        </div>
-                        <button id="reloadButton" class="reload-button">重新加载</button>
-                    </div>
+            <div class="right-panel">
+                <div class="right-content">
+                    <div id="statusText" class="status-text">...</div>
+                    <button id="reloadButton" class="reload-button">↻重新加载</button>
                 </div>
             </div>
         </div>
@@ -783,7 +516,7 @@
         const winnerNumber = document.getElementById('winnerNumber');
         const confirmButton = document.getElementById('confirmButton');
         const wheelWrapper = document.querySelector('.wheel-wrapper');
-        const statusMessage = document.getElementById('statusMessage');
+        const statusText = document.getElementById('statusText');
         const reloadButton = document.getElementById('reloadButton');
         
         // 转盘状态
@@ -795,52 +528,41 @@
         let spinAnimationId = null;
         let spinStartTime = 0;
         let winningNumber = 1;
-        let isRequestFailed = false;
-        let loadTimer = null;
+        let statusTimer = null;
         
-        // 模拟加载状态
-        function simulateLoading() {
-            // 随机5-8秒后显示"请求失败"
-            const randomDelay = 5000 + Math.random() * 3000; // 5-8秒
+        // 初始化右侧面板状态
+        function initRightPanel() {
+            // 显示加载状态
+            statusText.textContent = '...';
             
-            loadTimer = setTimeout(() => {
-                isRequestFailed = true;
-                statusMessage.textContent = "请求失败";
-                statusMessage.classList.add("status-error");
-                
-                // 显示重新加载按钮
-                reloadButton.style.display = "block";
-                
-                // 隐藏加载动画
-                const loadingDots = document.querySelector('.loading-dots');
-                loadingDots.style.display = "none";
-            }, randomDelay);
-        }
-        
-        // 重置加载状态
-        function resetLoading() {
-            clearTimeout(loadTimer);
-            isRequestFailed = false;
-            statusMessage.textContent = "加载中";
-            statusMessage.classList.remove("status-error");
+            // 清除之前的定时器
+            if (statusTimer) {
+                clearTimeout(statusTimer);
+            }
             
-            // 隐藏重新加载按钮
-            reloadButton.style.display = "none";
-            
-            // 显示加载动画
-            const loadingDots = document.querySelector('.loading-dots');
-            loadingDots.style.display = "flex";
-            
-            // 重新开始模拟加载
-            simulateLoading();
+            // 设置5-8秒的随机时间后显示"请求失败"
+            const delay = 5000 + Math.random() * 3000; // 5000-8000ms
+            statusTimer = setTimeout(() => {
+                statusText.textContent = '请求失败';
+            }, delay);
         }
         
         // 重新加载按钮点击事件
-        reloadButton.addEventListener('click', resetLoading);
+        reloadButton.addEventListener('click', () => {
+            // 显示加载状态
+            statusText.textContent = '...';
+            
+            // 设置5-8秒的随机时间后显示"请求失败"
+            const delay = 5000 + Math.random() * 3000; // 5000-8000ms
+            setTimeout(() => {
+                statusText.textContent = '请求失败';
+            }, delay);
+        });
         
-        // 页面加载时开始模拟
+        // 页面加载时初始化右侧面板
         window.addEventListener('load', () => {
-            simulateLoading();
+            initWheel();
+            initRightPanel();
         });
         
         // 初始化转盘
@@ -1047,8 +769,6 @@
         confirmButton.addEventListener('click', closeWinnerModal);
 
         window.addEventListener('resize', initWheel);
-
-        window.addEventListener('load', initWheel);
     </script>
 </body>
 </html>
