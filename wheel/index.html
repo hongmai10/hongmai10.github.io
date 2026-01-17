@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        ▪ { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body { 
             font-family: 'Inter', system-ui, -apple-system, sans-serif; 
@@ -43,20 +43,29 @@
         .hero p { color: #6b7280; font-size: 1.125rem; }
         @media (prefers-color-scheme: dark) { .hero p { color: #9ca3af; } }
 
-        .wheel-container {
+        .wheel-area {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 3rem;
+            justify-content: center;
             gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .wheel-container {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
         
         .wheel-wrapper {
             position: relative;
             width: 500px;
             height: 500px;
-            max-width: 60vw;
-            max-height: 60vw;
+            max-width: 90vw;
+            max-height: 90vw;
         }
         
         .wheel-canvas {
@@ -135,30 +144,27 @@
             100% { opacity: 0.7; }
         }
 
-        /* 右侧矩形样式 */
-        .right-panel {
+        .status-panel {
             flex: 1;
-            max-width: 30%;
+            min-width: 250px;
+            max-width: 300px;
             height: 500px;
-            background-color: rgba(243, 244, 246, 0.9);
+            background: rgba(243, 244, 246, 0.3);
             border-radius: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 2rem;
             border: 1px solid #e5e7eb;
         }
         
-        .right-content {
-            text-align: center;
-            padding: 2rem;
-        }
-        
         .status-text {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
             min-height: 2.5rem;
         }
         
@@ -166,18 +172,23 @@
             background: none;
             border: none;
             color: #111827;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
             padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            transition: background-color 0.2s;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
         }
         
         .reload-button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
         
+        .reload-button.hidden {
+            display: none;
+        }
+
         .winner-modal {
             position: fixed;
             top: 0;
@@ -379,18 +390,18 @@
     </header>
 
     <main class="main container">
-        <div class="wheel-container">
-            <div class="wheel-wrapper">
-                <canvas id="wheelCanvas" class="wheel-canvas"></canvas>
-                <div class="wheel-pointer"></div>
-                <button id="spinButton" class="spin-button">SPIN</button>
+        <div class="wheel-area">
+            <div class="wheel-container">
+                <div class="wheel-wrapper">
+                    <canvas id="wheelCanvas" class="wheel-canvas"></canvas>
+                    <div class="wheel-pointer"></div>
+                    <button id="spinButton" class="spin-button">SPIN</button>
+                </div>
             </div>
             
-            <div class="right-panel">
-                <div class="right-content">
-                    <div id="statusText" class="status-text">...</div>
-                    <button id="reloadButton" class="reload-button">↻重新加载</button>
-                </div>
+            <div class="status-panel">
+                <div id="statusText" class="status-text">加载中...</div>
+                <button id="reloadButton" class="reload-button hidden">↻ 重新加载</button>
             </div>
         </div>
 
@@ -528,41 +539,22 @@
         let spinAnimationId = null;
         let spinStartTime = 0;
         let winningNumber = 1;
-        let statusTimer = null;
         
-        // 初始化右侧面板状态
-        function initRightPanel() {
-            // 显示加载状态
-            statusText.textContent = '...';
-            
-            // 清除之前的定时器
-            if (statusTimer) {
-                clearTimeout(statusTimer);
-            }
-            
-            // 设置5-8秒的随机时间后显示"请求失败"
-            const delay = 5000 + Math.random() * 3000; // 5000-8000ms
-            statusTimer = setTimeout(() => {
-                statusText.textContent = '请求失败';
-            }, delay);
+        // 状态管理
+        function initStatusPanel() {
+            setTimeout(() => {
+                statusText.textContent = "请求失败";
+                reloadButton.classList.remove("hidden");
+            }, 5000 + Math.random() * 3000);
         }
         
-        // 重新加载按钮点击事件
-        reloadButton.addEventListener('click', () => {
-            // 显示加载状态
-            statusText.textContent = '...';
-            
-            // 设置5-8秒的随机时间后显示"请求失败"
-            const delay = 5000 + Math.random() * 3000; // 5000-8000ms
+        reloadButton.addEventListener("click", function() {
+            statusText.textContent = "...";
+            reloadButton.classList.add("hidden");
             setTimeout(() => {
-                statusText.textContent = '请求失败';
-            }, delay);
-        });
-        
-        // 页面加载时初始化右侧面板
-        window.addEventListener('load', () => {
-            initWheel();
-            initRightPanel();
+                statusText.textContent = "请求失败";
+                reloadButton.classList.remove("hidden");
+            }, 1000);
         });
         
         // 初始化转盘
@@ -769,6 +761,10 @@
         confirmButton.addEventListener('click', closeWinnerModal);
 
         window.addEventListener('resize', initWheel);
+        window.addEventListener('load', () => {
+            initWheel();
+            initStatusPanel();
+        });
     </script>
 </body>
 </html>
