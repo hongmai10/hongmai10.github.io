@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Forbidden</title>
+</head>
+<body bgcolor="#000000" text="#00FF00" link="#FFFF00" vlink="#FF0000" alink="#FF00FF">
+
+    <center>
+        <h1>
+            <font color="red" size="7">⚠️ 禁 止 访 问 ⚠️</font>
+        </h1>
+    </center>
+
+    <marquee behavior="alternate" scrollamount="15" bgcolor="#330000">
+        <font size="5" color="white"><b> 学 校 机 房 管 理 员 已 记 录 此 次 访 问 </b></font>
+    </marquee>
+
+    <br>
+    <hr width="80%" size="8" noshade color="lime">
+    <br>
+
+    <blockquote>
+        <pre>
+            <font size="4" face="Courier New">
+C:\&gt; ping 教 务 处 服 务 器
+正在 Ping 192.168.0.1 具有 32 字节的数据:
+请求超时。
+请求超时。
+来自 10.0.0.1 的 拒 绝 消 息 : 访 问 已 被 组 策 略 禁 用。
+
+C:\&gt; tracert 你 想 去 的 网 站
+   1    &lt;1 ms   &lt;1 ms   &lt;1 ms  机 房 网 关 [10.10.10.254]
+   2     *        *        *     请 求 被 机 房 管 理 软 件 屏 蔽
+   3     ^C
+            </font>
+        </pre>
+    </blockquote>
+
+    <div align="left" style="margin-left:15%;">
+        <font color="#CCCCCC" face="Comic Sans MS" size="3">
+            <b>!! 错 误 代 码 : 0x8004F06B - 访 问 已 禁 止 !!</b>
+        </font>
+    </div>
+
+    <br>
+
+    <table width="70%" border="5" cellpadding="10" cellspacing="0" bgcolor="#222222" align="center" bordercolor="#FF0000">
+        <tr>
+            <td>
+                <font color="yellow" size="4">
+                    <marquee direction="up" height="60" scrolldelay="300">
+                        <p> 根 据 学 校 机 房 管 理 规 定 ， 该 网 站 被 列 入 黑 名 单 </p>
+                    </marquee>
+                </font>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <br>
+
+    <fieldset style="border:3px dashed #FF00FF; width:60%; margin-left:20%; background-color:#001100;">
+        <legend align="center">
+            <font color="aqua" size="5"><blink>⚠️ 管 理 员 留 言 ⚠️</blink></font>
+        </legend>
+        <font color="#FFA500" size="4">
+            <ul>
+                <li>你 的 IP 地 址 已 被 记 录 : <u>172.16.45.138</u></li>
+                <li>如 果 你 认 为 是 误 封 ， 请 联 系 电 教 老 师</li>
+            </ul>
+        </font>
+    </fieldset>
+
+    <br>
+    <br>
+
+    <form action="#" method="get">
+        <div style="background-color:#3f3f3f; padding: 15px; border: 6px groove #ff6600; width: 80%; margin: auto;">
+            <font color="#FFFFFF">用 户 名 :</font>
+            <input type="text" name="username" value="admin" size="15" disabled style="background-color:black; color:lime;">
+            <br>
+            <font color="#FFFFFF">密 码 :</font>
+            <input type="password" name="pwd" value="12345678" size="15" readonly style="background-color:black; color:red;">
+            <br>
+            <br>
+            <input type="button" value="  登 录 ( 已 禁 用 )  " onclick="alert('机 房 管 理 员 禁 止 登 录')" style="background-color:#660000; color:white; font-size:18px; border: 3px inset gray;">
+            &nbsp;&nbsp;&nbsp;
+            <input type="button" value="  取 消  " onclick="window.location.href='about:blank'" style="background-color:#333333; color:#00FF00;">
+            <br>
+            <br>
+            <textarea rows="4" cols="40" readonly style="background-color:#0a0a0a; color:#FFCC00; border: 4px solid #808080;">访 问 被 拒 绝 。 详 细 信 息 : 客 户 端 证 书 无 效 / 域 策 略 不 允 许 连 接 到 此 服 务 器 。 如 果 您 坚 持 尝 试 ， 系 统 将 自 动 上 报 至 教 务 处 。</textarea>
+        </div>
+    </form>
+
+    <br>
+    <br>
+    <br>
+    <dir>
+        <menu>
+            <li type="square"><font color="#808080">可 能 的 原 因 : 网 站 包 含 游 戏 / 视 频 / 聊 天 室</font></li>
+        </menu>
+    </dir>
+
+    <br>
+
+    <pre>
+        <samp>
+            <font size="2">
+----- BEGIN 机 房 日 志 -----
+10:23:45  用 户 尝 试 访 问  www. 禁 止 的 网 站 .com
+10:23:45  策 略 命 令 : DROP  源 IP: 172.16.45.138
+10:24:01  用 户 重 试 连 接 ， 已 触 发 警 告 阈 值
+10:24:02  发 送 消 息 到 管 理 员 控 制 台
+------ END 机 房 日 志 ------
+            </font>
+        </samp>
+    </pre>
+
+    <br>
+    <br>
+
+    <center>
+        <font color="#FF0000" size="5" face="Webdings">4 5 r t y 8 9 0 p [ ] \ ; '</font>
+        <br>
+        <font color="#00FF00" size="2">5 7 k 8 d 2 k 2 v</font>
+    </center>
+
+    <br>
+
+    <hr width="100%" color="silver">
+    <p align="right">
+        <font color="teal" size="1">
+            * 版 权 所 有 不 存 在 *   &copy; 202? 学 校 机 房 管 理 委 员 会  &nbsp;&nbsp;&nbsp;
+            <a href="#">返 回 顶 部 ( 无 效 链 接 )</a>  &nbsp;&nbsp;
+            <a href="javascript:void(0)" onclick="alert('就 告 诉 你 不 能 访 问 了 还 点 ！')">联 系 管 理 员 ( 也 无 效 )</a>
+        </font>
+    </p>
+</body>
+</html>
