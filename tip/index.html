@@ -1,155 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>403 Forbidden</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>访问被拦截</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #fff;
+      font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", Roboto, sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      line-height: 1.5;
+      color: #000;
+    }
+    .container {
+      width: 580px;
+      max-width: 94%;
+      border: 2px solid #000;
+      padding: 1.8rem 2.5rem;
+      background: #fff;
+    }
+    .icon {
+      font-size: 3rem;
+      text-align: left;
+      margin-bottom: 0.2rem;
+      line-height: 1;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: left;
+      margin: 0.5rem 0 1rem 0;
+      text-transform: uppercase;
+      letter-spacing: -0.3px;
+      border-bottom: 1px solid #000;
+      padding-bottom: 0.8rem;
+    }
+    .message {
+      background: #f2f2f2;
+      padding: 0.8rem 1.2rem;
+      border-left: 4px solid #800000;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      color: #000;
+      text-align: left;
+    }
+    .details {
+      border: 1px solid #000;
+      padding: 0.8rem 1.2rem;
+      background: #fff;
+      margin-bottom: 1.2rem;
+    }
+    .row {
+      display: flex;
+      padding: 0.35rem 0;
+      border-bottom: 1px dashed #aaa;
+    }
+    .row:last-child {
+      border-bottom: none;
+    }
+    .label {
+      width: 90px;
+      font-weight: 600;
+      color: #000;
+    }
+    .value {
+      flex: 1;
+      color: #000;
+    }
+    .footer {
+      text-align: left;
+      font-size: 0.8rem;
+      color: #333;
+      border-top: 1px solid #000;
+      padding-top: 0.9rem;
+    }
+    .container, .container * { cursor: default; }
+  </style>
 </head>
-<body bgcolor="#000000" text="#00FF00" link="#FFFF00" vlink="#FF0000" alink="#FF00FF" style="margin:0; padding:20px; font-family: 'Courier New', '宋体', 'MS Gothic', monospace;">
+<body>
+<div class="container">
+  <div class="icon">⛔</div>
 
-<center>
-    <h1>
-        <font color="red" size="7">⚠ 403 FORBIDDEN ⚠</font>
-    </h1>
-    <font color="#FFA500" size="5"><blink>访问已被机房策略引擎拦截</blink></font><br>
-    <font color="yellow" size="3">你的IP: 172.16.45.138 已加入实时监控列表</font>
-</center>
+  <h1>学校机房已禁止访问该界面</h1>
 
-<!-- 滚动的警告条，古早味 -->
-<marquee behavior="scroll" direction="left" scrollamount="8" bgcolor="#330000" style="padding:5px; border:3px ridge red;">
-    <font color="white" size="4"><b>  ！！！ 学 校 机 房 管 理 员 已 记 录 此 次 访 问  ！！！ 所 有 操 作 均 有 日 志  ！！！</b></font>
-</marquee>
+  <div class="message">
+    ⚠️ 当前URL已被限制访问。
+  </div>
 
-<br>
-<hr width="100%" size="6" noshade color="lime">
-<br>
+  <div class="details">
+    <div class="row"><span class="label">错误码</span><span class="value">LAB_403_FORBIDDEN</span></div>
+    <div class="row"><span class="label">时间戳</span><span class="value" id="timestamp">--</span></div>
+    <div class="row"><span class="label">客户端IP</span><span class="value">10.11.12.105</span></div>
+    <div class="row"><span class="label">机位号</span><span class="value">3F-A07 / 工作站12</span></div>
+    <div class="row"><span class="label">拦截策略</span><span class="value">FILTER-GROUP: LAB-EDU-02</span></div>
+    <div class="row"><span class="label">审计ID</span><span class="value">CAMPUS-NET-2025-04-2387</span></div>
+  </div>
 
-<!-- 混乱的表格，无规律边框颜色，故意错位 -->
-<table border="4" cellpadding="8" cellspacing="3" bordercolor="#FF00FF" bgcolor="#1A1A1A" width="95%" align="center">
-    <tr bgcolor="#2F4F2F">
-        <td><font color="#00FFFF">客户端地址</font></td>
-        <td><font color="#FFD700">172.16.45.138 (MAC: 00-1A-2B-3C-4D-5E)</font></td>
-        <td bgcolor="#3F1A3F"><font color="#FFA07A">策略版本</font></td>
-        <td><font color="#ADFF2F">3.1.4-𪚥𪚥.2025</font></td>
-    </tr>
-    <tr>
-        <td bgcolor="#2D2D2D"><font color="#FFB6C1">请求目标</font></td>
-        <td colspan="3"><font color="#98FB98">GET /⿻娱乐/game?ref=𪚥𫝀𫝁</font></td>
-    </tr>
-    <tr bgcolor="#2A2A2A">
-        <td><font color="#FFA500">触发规则</font></td>
-        <td><font color="#FF6347">黑名单_𪚥𪚥类别 (ID: BLK-𪚥-1701)</font></td>
-        <td><font color="#FFDAB9">审计ID</font></td>
-        <td><font color="#B0E0E6">a8d2-𫝀𫝁-44f9</font></td>
-    </tr>
-</table>
-
-<br>
-
-<!-- 两个并排的乱码块：左边是十六进制转储，右边是生僻字混乱日志 -->
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-    <div style="flex: 1; min-width: 250px; background: #0A1A0A; border: 3px dashed #9F2F9F; padding: 12px; font-family: 'Courier New', monospace;">
-        <b><font color="#FF69B4">hexdump -C request_payload</font></b><br>
-        <pre style="margin:0; color:#9F9; background:#000; padding:8px; overflow-x:auto;">
-00000000  48 54 54 50 2f 31 2e 31  20 34 30 33 20 46 6f 72  |HTTP/1.1 403 For|
-00000010  62 69 64 64 65 6e 0d 0a  53 65 72 76 65 72 3a 20  |bidden..Server: |
-00000020  53 63 68 6f 6f 6c 47 61  74 65 77 61 79 2f 33 2e  |SchoolGateway/3.|
-00000030  31 0d 0a 58 2d 50 6f 6c  69 63 79 2d 49 64 3a 20  |1..X-Policy-Id: |
-00000040  <span style="background:#3F1F3F;">𪚥𪚥𫝀𫝁𠀀𠀁𠀂</span> 0d 0a 0d 0a  3c 68 31 3e 34 30 33  |..........&lt;h1&gt;403|
-        </pre>
-    </div>
-    <div style="flex: 1; min-width: 250px; background: #1F2A1F; border: 5px groove #FF6600; padding: 10px; color: #FFD700;">
-        <b><font color="cyan">🔴 实时过滤日志 (最后6条)</font></b><br>
-        <pre style="background:#0A0A0A; padding:5px; color:#B4EEB4; font-size:0.9rem;">
-[15:23:42] 允许 192.168.12.56 elearning
-[15:23:45] <span style="color:#FF6666;">拦截 172.16.45.138 ⿻娱乐?ref=𪚥𪚥</span>
-[15:23:47] 允许 10.34.2.15 library
-[15:23:49] <span style="color:#FF6666;">拦截 172.16.45.138 (重复)</span>
-[15:23:52] 告警 阈值触发，上报至 教务处
-[15:23:55] <span style="background:#3F1F1F;">写入 /var/log/school/𪚥𪚥.20250304.log</span>
-        </pre>
-    </div>
+  <div class="footer">
+    珠海市凤凰中学
+  </div>
 </div>
 
-<br>
-
-<!-- 内核堆栈追踪，包含罕见汉字，故意乱排 -->
-<fieldset style="border: 4px double #FF00FF; background: #111111; padding: 15px; margin: 20px 0;">
-    <legend align="center"><font color="yellow" size="5">⚡ 策略引擎堆栈 ⚡</font></legend>
-    <pre style="color: #A5F2A5; background: #000; padding: 15px; font-size:0.85rem; white-space: pre-wrap;">
-[proxy_filter] 进入 http_access_check (pid:3742, cpu:2)
-0xffffffffa0138f60 &lt;check+0x20&gt;:   mov    eax,DWORD PTR [rbp-0x18]    ; policy_flags
-0xffffffffa0138f63 &lt;check+0x23&gt;:   test   eax,0x8004f06b              ; 禁止掩码
-0xffffffffa0138f68 &lt;check+0x28&gt;:   jne    0xffffffffa0138f90 &lt;drop&gt;
-0xffffffffa0138f6a &lt;check+0x2a&gt;:   lea    rdi,[rip+0x2d5a1]          ; print_𪚥_module
-0xffffffffa0138f71 &lt;check+0x31&gt;:   call   0xffffffffa0124b20 &lt;dump_𫝀𫝁_signature&gt;
-0xffffffffa0138f76 &lt;check+0x36&gt;:   mov    rbx, QWORD PTR [rbp-0x30]   ; session_𪚥
-0xffffffffa0138f7a &lt;check+0x3a&gt;:   cmp    word ptr [rbx], 0x9f9f      ; 生僻字特征 '𪚥'
-0xffffffffa0138f7f &lt;check+0x3f&gt;:   je     0xffffffffa0138fc0 &lt;panic&gt;
-    </pre>
-</fieldset>
-
-<!-- 管理员留言区域，全是生僻字和错误码，没有解释 -->
-<div style="background: #2A1A1A; border: 6px ridge #8B0000; padding: 20px; margin: 25px 0; color: #FFCC99;">
-    <span style="font-size: 2rem; background: black; padding:5px;">📢 管 理 员 留 言</span>
-    <ul style="font-size: 1.1rem;">
-        <li>你的 IP <strong style="color:#FF4500;">172.16.45.138</strong> 已被硬件防火墙记录至 <span style="background:#3F0000;">"𪚥𫝀𫝁𠀀𠀁𠀂"</span> 表。</li>
-        <li>生僻字校验失败: cookie包含非法字节 <code style="background:#000; color:#0F0;">0x9F 0x9F 0xA6 0xF0 𪚥</code> ，与穿透攻击特征匹配。</li>
-        <li>错误码 <span style="color:#FF69B4; font-size:1.3rem;">0x8F3A𪚥𪚥7B2C</span> 已加入审计跟踪。</li>
-        <li>如需解封，请携带学生证到电教楼301，并口述上述错误码。</li>
-    </ul>
-    <p style="color:#ADADAD;">⚠️ 本消息由组策略自动生成，所有记录不可篡改。</p>
-</div>
-
-<!-- 混乱的表单，输入框充满生僻字默认值，按钮点不了 -->
-<form style="background: #1E2A1E; border: 5px dotted #00CED1; padding: 20px; margin: 30px 0;">
-    <fieldset>
-        <legend><font color="orange" size="5">🔐 管 理 员 认 证 入 口</font></legend>
-        <font color="white">用户名:</font> <input type="text" value="administrator_𪚥" disabled style="background:#000; color:lime; border:3px inset red;"><br><br>
-        <font color="white">密&nbsp;&nbsp;码:</font> <input type="password" value="12345678𪚥𫝀" readonly style="background:#000; color:red; border:3px inset orange;"><br><br>
-        <input type="button" value="  登 录 ( 已 禁 用 )  " onclick="alert('会话被策略冻结 0x8004F06B')" style="background:#660000; color:white; font-size:18px; border: 4px outset #a55;"> &nbsp;&nbsp;
-        <input type="button" value="  取 消  " onclick="window.close()" style="background:#333; color:#0F0; border: 4px outset #3a3;">
-        <br><br>
-        <textarea rows="3" cols="45" readonly style="background:#0A0A0A; color:#FFCC00; border: 4px solid #808080;">最 后 登 录 尝 试: admin 从 192.168.0.10 (失败: 证书𪚥验证未通过)</textarea>
-    </fieldset>
-</form>
-
-<!-- 极乱的行内块：随机生僻字 + 错误代码 + 滚动文字 -->
-<div style="display: flex; justify-content: space-between; background: #2F4F4F; padding: 10px; border: 5px dashed #9400D3; margin: 20px 0;">
-    <span style="color: #FFA500;">𪚥𫝀𫝁𠀀𠀁𠀂𪚥𪚥</span>
-    <marquee direction="right" scrollamount="12" width="300" behavior="alternate" bgcolor="#330033">
-        <font color="yellow" size="3">⚠️ 0x8004F06B ⚠️</font>
-    </marquee>
-    <span style="color: #FF69B4;">𪚥𪚥𫝀𫝀𠀂𠀃</span>
-</div>
-
-<!-- 机房的原始日志输出，带生僻字时间戳 -->
-<pre style="background: #0F0F0F; color: #8F8; padding: 15px; border: 6px double #2E8B57; font-size:0.8rem;">
------ BEGIN 机 房 日 志 (RAW) -----
-10:23:45.123  user=172.16.45.138  req=GET /⿻娱乐/  rule=BLK-𪚥-1701
-10:23:45.127  policy_flags=0x8004f06b  session=𪚥𪚥  action=DROP
-10:23:46.001  syslog: audit_id=a8d2-𫝀𫝁-44f9 written to /var/log/school/𪚥𪚥.20250304.log
-10:24:01.332  same source 172.16.45.138 retry, threshold=3, trigger alert
-10:24:02.101  snmp-trap sent to 10.10.254.250 (机房管理控制台)
------- END 机 房 日 志 ------
-</pre>
-
-<!-- 底部没有版权模拟字样，只有学校名称和无效链接 -->
-<br>
-<hr color="silver" width="100%">
-<p align="right" style="margin-right:20px;">
-    <font color="teal" size="1">
-        * 珠海市凤凰中学 · 网络中心 · 事件ID: 7C4B-𪚥𪚥-3F6A &nbsp;&nbsp;
-        <a href="#" onclick="alert('访问已被拒绝，无法联系'); return false;">[ 联 系 管 理 员 ]</a> &nbsp;&nbsp;
-        <a href="#" onclick="alert('无效链接'); return false;">[ 返 回 顶 部 ]</a>
-    </font>
-</p>
-
-<!-- 最后再藏一段肉眼可见的乱码，但没有任何解释，看上去像系统残留 -->
-<div style="color:#2F4F2F; font-size:0.7rem; text-align:center;">
-    ╔══════════════════════════════════════╗<br>
-    ║ 0x8F3A 0x9F9F 0xA6F0 𪚥𪚥𫝀𫝁𠀀 ║<br>
-    ╚══════════════════════════════════════╝
-</div>
+<script>
+  document.getElementById('timestamp').textContent = (function() {
+    var d = new Date();
+    return d.getFullYear() + '-' +
+           String(d.getMonth()+1).padStart(2,'0') + '-' +
+           String(d.getDate()).padStart(2,'0') + ' ' +
+           String(d.getHours()).padStart(2,'0') + ':' +
+           String(d.getMinutes()).padStart(2,'0') + ':' +
+           String(d.getSeconds()).padStart(2,'0') + ' CST';
+  })();
+</script>
 </body>
 </html>
