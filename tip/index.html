@@ -9,19 +9,17 @@
     body {
       background: #fff;
       font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", Roboto, sans-serif;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      align-items: flex-start;
+      justify-content: flex-start;
       line-height: 1.5;
       color: #000;
+      padding: 2.5rem 2rem;
     }
     .container {
-      width: 580px;
-      max-width: 94%;
-      border: 2px solid #000;
-      padding: 1.8rem 2.5rem;
+      width: 100%;
+      max-width: 780px;
       background: #fff;
     }
     .icon {
@@ -50,8 +48,8 @@
       text-align: left;
     }
     .details {
-      border: 1px solid #000;
-      padding: 0.8rem 1.2rem;
+      border: none;
+      padding: 0;
       background: #fff;
       margin-bottom: 1.2rem;
     }
@@ -64,7 +62,7 @@
       border-bottom: none;
     }
     .label {
-      width: 90px;
+      width: 100px;
       font-weight: 600;
       color: #000;
     }
@@ -85,13 +83,10 @@
 <body>
 <div class="container">
   <div class="icon">⛔</div>
-
-  <h1>学校机房已禁止访问该界面</h1>
-
+  <h1>禁止访问该界面</h1>
   <div class="message">
     ⚠️ 当前URL已被限制访问。
   </div>
-
   <div class="details">
     <div class="row"><span class="label">错误码</span><span class="value">LAB_403_FORBIDDEN</span></div>
     <div class="row"><span class="label">时间戳</span><span class="value" id="timestamp">--</span></div>
@@ -100,12 +95,10 @@
     <div class="row"><span class="label">拦截策略</span><span class="value">FILTER-GROUP: LAB-EDU-02</span></div>
     <div class="row"><span class="label">审计ID</span><span class="value">CAMPUS-NET-2025-04-2387</span></div>
   </div>
-
   <div class="footer">
     珠海市凤凰中学
   </div>
 </div>
-
 <script>
   document.getElementById('timestamp').textContent = (function() {
     var d = new Date();
