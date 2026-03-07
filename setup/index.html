@@ -1,12 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>Set-up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安装 - 网页加载器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f5f7fb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            max-width: 720px;
+            width: 100%;
+            padding: 2.5rem 2.8rem;
+            border: 1px solid #e9ecf0;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #eef2f6;
+            color: #1e3a5f;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1.2rem;
+            border: 1px solid #d0d9e3;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #0b1e2e;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .desc {
+            font-size: 1.1rem;
+            color: #3e5a76;
+            margin-bottom: 2rem;
+            border-left: 3px solid #2b6eb0;
+            padding-left: 1.2rem;
+            background: #f8fafd;
+            line-height: 1.5;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0 2rem;
+        }
+
+        .feature {
+            background: #f8fafd;
+            border-radius: 40px;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid #dde3ea;
+            color: #1e3a5f;
+            font-size: 0.95rem;
+        }
+
+        .install-box {
+            background: #f0f4fa;
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            border: 1px solid #d0dbe9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin: 1.8rem 0 1.2rem;
+        }
+
+        .install-info {
+            color: #1e3a5f;
+            font-size: 1rem;
+        }
+
+        .install-info span {
+            background: #e1e8f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .btn-install {
+            background: #1e3a5f;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            border: 1px solid #3f6090;
+            transition: background 0.1s;
+            min-width: 160px;
+        }
+
+        .btn-install:hover {
+            background: #15304f;
+        }
+
+        .footer-note {
+            margin-top: 1.5rem;
+            color: #6f8aa8;
+            font-size: 0.85rem;
+            border-top: 1px solid #e0e8f0;
+            padding-top: 1.2rem;
+        }
+    </style>
 </head>
 <body>
-    <button onclick="window.location.href='webblocker.user.js'">
-        Add JavaScript
-    </button>
+    <div class="card">
+        <div class="tag">webblocker.user.js · v2.0</div>
+        
+        <h1>网站加载器</h1>
+        <div class="desc">轻量脚本</div>
+
+        <div class="features">
+            <span class="feature">⚡ 即时生效</span>
+            <span class="feature">🔒 本地运行</span>
+        </div>
+
+        <div class="install-box">
+            <div class="install-info">
+                <span>Tampermonkey 已安装</span> 永久免费
+            </div>
+            <button class="btn-install" onclick="window.location.href='webblocker.user.js'">
+                Install
+            </button>
+        </div>
+    </div>
 </body>
 </html>
