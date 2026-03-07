@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install - Web Loader</title>
+    <title>Install · Web Loader</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
-        body{min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(145deg,#f0f4fa,#e9eef5);margin:0}
-        .card{width:100%;background:rgba(255,255,255,0.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:2.5rem 3rem;flex:1;display:flex;flex-direction:column;justify-content:center}
+        body{height:100vh;overflow:hidden;background:linear-gradient(145deg,#f0f4fa,#e9eef5)}
+        .card{width:100%;height:100%;overflow-y:auto;background:rgba(255,255,255,0.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:2.5rem 3rem;display:flex;flex-direction:column;justify-content:center}
         h1{font-size:3rem;font-weight:650;color:#0a1a2b;margin-bottom:0.3rem;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px}
         h1:after{content:"β";font-size:1rem;font-weight:400;background:#2b6eb0;color:#fff;padding:0.2rem 0.8rem;border-radius:40px;opacity:0.9}
         .desc{font-size:1.2rem;color:#2b4a6e;margin-bottom:2rem;padding-left:1.2rem;border-left:4px solid #2b6eb0;background:linear-gradient(90deg,rgba(43,110,176,0.03),transparent);line-height:1.5;font-weight:350}
@@ -23,6 +23,10 @@
         .btn-copy:hover{background:#fff;border-color:#2b6eb0;transform:translateY(-2px) scale(1.02);box-shadow:0 12px 20px -10px #2b6eb0}
         .footer-note{margin-top:2rem;color:#577594;font-size:0.85rem;border-top:1px dashed rgba(80,120,160,0.3);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center}
         .pill{background:rgba(43,110,176,0.06);padding:0.2rem 1rem;border-radius:30px;font-size:0.8rem;border:1px solid rgba(43,110,176,0.15);color:#1e4b77}
+        /* 自定义滚动条 (可选，更和谐) */
+        .card::-webkit-scrollbar{width:6px}
+        .card::-webkit-scrollbar-track{background:transparent}
+        .card::-webkit-scrollbar-thumb{background:rgba(43,110,176,0.3);border-radius:20px}
     </style>
 </head>
 <body>
