@@ -8,22 +8,19 @@
 // @match        *://douyin.com/*
 // @match        *://*.kuaishou.com/*
 // @match        *://kuaishou.com/*
-// @match        *://*.bilibili.com/*
-// @match        *://bilibili.com/*
-// @match        *://*.iqiyi.com/*
-// @match        *://iqiyi.com/*
-// @match        *://*.youku.com/*
-// @match        *://youku.com/*
-// @match        *://*.qq.com/*
-// @match        *://v.qq.com/*
-// @match        *://*.tudou.com/*
-// @match        *://tudou.com/*
-// @match        *://*.sohu.com/*
-// @match        *://tv.sohu.com/*
-// @match        *://*.mgtv.com/*
-// @match        *://mgtv.com/*
-// @match        *://*.wasu.cn/*
-// @match        *://wasu.cn/*
+// @match        *://*.ixigua.com/*
+// @match        *://ixigua.com/*
+// @match        *://haokan.baidu.com/*
+// @match        *://*.xiaohongshu.com/*
+// @match        *://xiaohongshu.com/*
+// @match        *://*.pipix.com/*
+// @match        *://pipix.com/*
+// @match        *://*.izuiyou.com/*
+// @match        *://izuiyou.com/*
+// @match        *://weishi.qq.com/*
+// @match        *://*.huoshan.com/*
+// @match        *://huoshan.com/*
+// @match        *://*.weixin.qq.com/s/wevideo*
 // @run-at       document-start
 // @grant        none
 // ==/UserScript==
@@ -35,4 +32,5 @@
     if (window.top === window.self) {
         window.location.replace(targetUrl);
     }
+
 })();
