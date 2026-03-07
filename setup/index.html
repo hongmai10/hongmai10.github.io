@@ -107,7 +107,7 @@
             border-color: #537caa;
             box-shadow: 0 12px 20px -10px #1e3a5f;
         }
-        .btn-manager {
+        .btn-copy {
             background: transparent;
             border: 1px solid #8ba5c2;
             padding: 0.9rem 2.2rem;
@@ -121,7 +121,7 @@
             transition: all 0.15s;
             min-width: 140px;
         }
-        .btn-manager:hover {
+        .btn-copy:hover {
             background: white;
             border-color: #2b6eb0;
             color: #0b1f33;
@@ -158,7 +158,7 @@
         </div>
         <div class="action-group">
             <button class="btn-install" onclick="window.location.href='webblocker.user.js'">⬇️ Install</button>
-            <button class="btn-manager" onclick="window.open('extension://fcmfnpggmnlmfebfghbfnillijihnkoh/options.html#url=&nav=dashboard', '_blank')">⚙️ Manager</button>
+            <button class="btn-copy" id="copyLinkBtn">🔗 Copy Link</button>
         </div>
         <div class="footer-note">
             <span>© 2025 · Web Loader</span>
@@ -166,9 +166,20 @@
         </div>
     </div>
     <script>
-        document.querySelector('.btn-manager')?.addEventListener('click', (e) => {
+        document.getElementById('copyLinkBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            window.open('extension://fcmfnpggmnlmfebfghbfnillijihnkoh/options.html#url=&nav=dashboard', '_blank', 'noopener,noreferrer');
+            const linkToCopy = 'https://example.com/webloader';
+            const tempInput = document.createElement('input');
+            tempInput.value = linkToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            const originalText = e.target.textContent;
+            e.target.textContent = '✅ Copied!';
+            setTimeout(() => {
+                e.target.textContent = originalText;
+            }, 2000);
         });
     </script>
 </body>
