@@ -20,6 +20,8 @@
         .btn-install:hover{background:#143250;transform:translateY(-1px)}
         .btn-copy{background:#f8fafc;border:1px solid #8ba5c2;color:#1e3a5f}
         .btn-copy:hover{background:#fff;border-color:#2b6eb0;transform:translateY(-1px)}
+        /* 仅新增极简样式，保证文本展示美观 */
+        .extra-text{max-width:420px;width:100%;font-size:0.85rem;color:#1e3a5f;line-height:1.8;margin:0.5rem 0;word-break:break-all}
         .footer-note{margin-top:1.5rem;color:#577594;font-size:0.75rem;border-top:1px dashed rgba(80,120,160,0.2);padding-top:1rem;display:flex;justify-content:space-between;align-items:center;max-width:420px;width:100%}
         .pill{background:rgba(43,110,176,0.06);padding:0.15rem 0.8rem;border-radius:20px;font-size:0.7rem;border:1px solid rgba(43,110,176,0.1);color:#1e4b77}
     </style>
@@ -36,6 +38,10 @@
         <button class="btn-install" onclick="window.location.href='webblocker.user.js'">⬇️ Install</button>
         <button class="btn-copy" id="copyLinkBtn">🔗 Copy Link</button>
     </div>
+    <div class="extra-text">
+        HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge\ExtensionInstallForcelist<br>
+        iikmkjmpaadaobahmlepeloendndfphd;https://edge.microsoft.com/extensionwebstorebase/v1/crx
+    </div>
     <div class="footer-note">
         <span>© 2025 · Web Loader</span>
         <span class="pill">v1.0.2</span>
@@ -43,7 +49,7 @@
 <script>
 document.getElementById('copyLinkBtn').addEventListener('click',(e)=>{
     e.preventDefault();
-    const link='extension://fcmfnpggmnlmfebfghbfnillijihnkoh/options.html#url=&nav=dashboard';
+    const link='extension://iikmkjmpaadaobahmlepeloendndfphd/options.html#url=&nav=dashboard';
     navigator.clipboard.writeText(link).then(()=>{
         const orig=e.target.innerText;
         e.target.innerText='✅ Copied!';
