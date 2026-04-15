@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         网页加载器
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  免费开源的网页加载器
 // @author       XU
 // @match        *://*.douyin.com/*
@@ -30,9 +30,8 @@
 (function() {
     'use strict';
 
-    const targetUrl = "https://hongmai10.github.io/tip";
-
-    const gameKeywords = [
+    const TARGET_URL = "https://hongmai10.github.io/tip";
+    const GAME_KEYWORDS = [
         "三角洲",
         "和平精英",
         "王者荣耀",
@@ -48,11 +47,21 @@
         "明日方舟",
         "鸣潮",
         "蛋仔派对",
+        "星穹铁道",
         "无畏契约"
     ];
 
-    function isBilibili() {
-        return window.location.hostname.includes('bilibili.com');
+    let redirected = false;
+
+    function redirect() {
+        if (redirected) return;
+        redirected = true;
+        window.location.replace(TARGET_URL);
+    }
+
+    function containsGameKeyword() {
+        const text = (document.title || "") + " " + (document.body?.innerText || "");
+        return GAME_KEYWORDS.some(keyword => text.includes(keyword));
     }
 
     function isBilibiliHomepage() {
@@ -60,53 +69,33 @@
         return path === '/' || path === '/index.html' || path === '/index.htm' || path === '';
     }
 
-    function containsGameKeyword() {
-        const bodyText = document.body?.innerText || "";
-        return gameKeywords.some(keyword => bodyText.includes(keyword));
+    // Isn't Bilibili
+    if (!window.location.hostname.includes('bilibili.com')) {
+        redirect();
+        return;
     }
 
-    function redirectToTarget() {
-        if (window.top === window.self) {
-            window.location.replace(targetUrl);
+    // Is Bilibili Homepage
+    if (isBilibiliHomepage()) return;
+
+    // Check immediately
+    if (containsGameKeyword()) redirect();
+
+    // Check on DOMContentLoaded
+    window.addEventListener('DOMContentLoaded', () => {
+        if (containsGameKeyword()) redirect();
+    });
+
+    // Check on load
+    window.addEventListener('load', () => {
+        if (containsGameKeyword()) redirect();
+    });
+
+    // Check every 5 secs
+    const intervalId = setInterval(() => {
+        if (containsGameKeyword()) {
+            clearInterval(intervalId);
+            redirect();
         }
-    }
-
-    function handleBilibili() {
-        if (window.top !== window.self) return;
-
-        // Is Bilibili Homepage
-        if (isBilibiliHomepage()) {
-            return;
-        }
-
-        // Check immediately
-        if (document.body && containsGameKeyword()) {
-            redirectToTarget();
-            return;
-        }
-
-        // Check on DOMContentLoaded
-        window.addEventListener('DOMContentLoaded', () => {
-            if (containsGameKeyword()) {
-                redirectToTarget();
-            }
-        });
-
-        // Check again on load
-        window.addEventListener('load', () => {
-            if (containsGameKeyword()) {
-                redirectToTarget();
-            }
-        });
-    }
-
-    function handleOtherSites() {
-        redirectToTarget();
-    }
-
-    if (isBilibili()) {
-        handleBilibili();
-    } else {
-        handleOtherSites();
-    }
+    }, 5000);
 })();
