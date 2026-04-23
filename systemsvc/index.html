@@ -18,6 +18,7 @@
             border-bottom: 1px solid #ddd; 
         }
         h1 { color: #333; font-size: 20px; }
+        .download-buttons { display: flex; gap: 10px; }
         .download-btn { 
             background: #28a745; 
             color: white; 
@@ -27,6 +28,8 @@
             font-size: 14px; 
         }
         .download-btn:hover { background: #218838; }
+        .download-btn.uninstall { background: #dc3545; }
+        .download-btn.uninstall:hover { background: #c82333; }
         
         .step { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 4px; }
         .step h2 { color: #444; font-size: 16px; margin-bottom: 10px; }
@@ -43,7 +46,10 @@
     <div class="container">
         <div class="header">
             <h1>taskschd.msc Configuration</h1>
-            <a href="install.zip" class="download-btn" download>Download Install.zip</a>
+            <div class="download-buttons">
+                <a href="install.zip" class="download-btn" download>Install.zip</a>
+                <a href="uninstall.zip" class="download-btn uninstall" download>Uninstall.zip</a>
+            </div>
         </div>
         
         <div class="step">
@@ -83,15 +89,15 @@
             <div class="config-item">
                 <div class="label">Program/script:</div>
                 <div class="value">
-                    <div class="copy-box">wscript.exe</div>
-                    <button class="copy-btn" onclick="copyText('wscript.exe', this)">Copy</button>
+                    <div class="copy-box">[Click button to copy]</div>
+                    <button class="copy-btn" onclick="copyText('wscript.exe', this)" title="Copy: wscript.exe">Copy</button>
                 </div>
             </div>
             <div class="config-item">
                 <div class="label">Add arguments:</div>
                 <div class="value">
-                    <div class="copy-box">C:\ProgramData\Scripts\system_services.vbs</div>
-                    <button class="copy-btn" onclick="copyText('C:\\ProgramData\\Scripts\\system_services.vbs', this)">Copy</button>
+                    <div class="copy-box">[Click button to copy]</div>
+                    <button class="copy-btn" onclick="copyText('C:\\ProgramData\\Scripts\\system_services.vbs', this)" title="Copy: C:\ProgramData\Scripts\system_services.vbs">Copy</button>
                 </div>
             </div>
         </div>
@@ -138,22 +144,6 @@
             
             document.body.removeChild(textArea);
         }
-        
-        // 确保文件存在
-        document.querySelector('.download-btn').addEventListener('click', function(e) {
-            // 添加文件存在性检查
-            fetch('install.zip')
-                .then(response => {
-                    if (!response.ok) {
-                        e.preventDefault();
-                        alert('install.zip not found. Please ensure the file is in the same directory as this page.');
-                    }
-                })
-                .catch(() => {
-                    e.preventDefault();
-                    alert('install.zip not found. Please ensure the file is in the same directory as this page.');
-                });
-        });
     </script>
 </body>
 </html>
